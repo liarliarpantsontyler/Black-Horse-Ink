@@ -69,6 +69,11 @@ export const siteConfigSchema = z.object({
   }),
   copy: z.object({
     primaryCta: z.string(),
+    startQuoteCta: z.string(),
+    submitQuoteCta: z.string(),
+    largeProjectCta: z.string(),
+    quoteWithArtistTemplate: z.string(),
+    quoteLikeThisHint: z.string(),
     ctaSubtext: z.string(),
     responseTimeCopy: z.string(),
     artistResponseTimeTemplate: z.string(),

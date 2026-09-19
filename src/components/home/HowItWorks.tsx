@@ -36,7 +36,7 @@ export function HowItWorks() {
           ))}
         </ol>
         <Button type="button" className="mt-10" onClick={() => openQuote()}>
-          Start a Quote
+          {siteConfig.copy.startQuoteCta}
         </Button>
         <p className="mt-3 text-xs text-muted">{siteConfig.copy.ctaSubtext}</p>
       </div>

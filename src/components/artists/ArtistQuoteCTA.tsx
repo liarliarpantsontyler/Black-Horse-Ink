@@ -1,6 +1,6 @@
 "use client";
 
-import { siteConfig } from "@/content/site.config";
+import { getQuoteWithArtist, siteConfig } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
 import { Button } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/analytics";
@@ -15,8 +15,8 @@ export function ArtistQuoteCTA({ artistId, instagram }: Props) {
   const artist = siteConfig.artists.find((a) => a.id === artistId);
   const label =
     artist?.inquiryType === "large_projects"
-      ? "Ask about a large project"
-      : `Get a quote with ${artist?.name ?? "artist"}`;
+      ? siteConfig.copy.largeProjectCta
+      : getQuoteWithArtist(artist?.name ?? "Artist");
 
   return (
     <div className="mt-8 flex flex-col gap-3 sm:flex-row">

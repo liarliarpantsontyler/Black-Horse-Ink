@@ -16,6 +16,11 @@ const raw: SiteConfig = {
   },
   copy: {
     primaryCta: "Get a Quote",
+    startQuoteCta: "Start a Quote",
+    submitQuoteCta: "Send My Tattoo",
+    largeProjectCta: "Ask About a Large Project",
+    quoteWithArtistTemplate: "Get a Quote with {{name}}",
+    quoteLikeThisHint: "Want Something Like This?",
     ctaSubtext: "Tell us your idea. We'll text you back. No phone call needed.",
     responseTimeCopy: "Usually replies within minutes during shop hours",
     artistResponseTimeTemplate: "{{artistName}} usually responds in minutes",
@@ -151,4 +156,8 @@ export function getArtistById(id: string) {
 
 export function getArtistBySlug(slug: string) {
   return siteConfig.artists.find((a) => a.slug === slug);
+}
+
+export function getQuoteWithArtist(name: string) {
+  return siteConfig.copy.quoteWithArtistTemplate.replace("{{name}}", name);
 }

@@ -450,7 +450,7 @@ export function QuoteFlow() {
                   disabled={submitting}
                   onClick={submit}
                 >
-                  {submitting ? "Sending…" : "Send My Tattoo"}
+                  {submitting ? "Sending…" : siteConfig.copy.submitQuoteCta}
                 </Button>
                 <p className="mt-3 text-center text-xs text-muted">
                   We&apos;ll only use this to respond to your tattoo request.

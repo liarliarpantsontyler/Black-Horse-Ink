@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { portfolioItems } from "@/content/portfolio";
 import type { PortfolioItem } from "@/content/schemas";
-import { getArtistById } from "@/content/site.config";
+import { getArtistById, siteConfig } from "@/content/site.config";
 import type { portfolioFilterSchema } from "@/content/schemas";
 import { z } from "zod";
 import { useQuote } from "@/context/QuoteContext";
@@ -93,7 +93,7 @@ export function PortfolioGrid({ artistId, limit }: Props) {
           src={active.image}
           alt={active.alt}
           onClose={() => setActive(null)}
-          quoteHint={`Tattoo by ${getArtistById(active.artistId)?.name ?? "Artist"}. Want something like this?`}
+          quoteHint={`Tattoo by ${getArtistById(active.artistId)?.name ?? "Artist"}. ${siteConfig.copy.quoteLikeThisHint}`}
           onQuote={() => {
             setActive(null);
             openQuote(active.artistId);

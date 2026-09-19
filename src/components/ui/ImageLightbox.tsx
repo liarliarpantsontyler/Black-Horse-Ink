@@ -18,7 +18,7 @@ export function ImageLightbox({
   alt,
   onClose,
   onQuote,
-  quoteHint = "Want something like this?",
+  quoteHint = siteConfig.copy.quoteLikeThisHint,
 }: Props) {
   useEffect(() => {
     const prev = document.body.style.overflow;

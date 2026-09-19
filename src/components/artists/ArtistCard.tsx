@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Artist, PortfolioItem } from "@/content/schemas";
 import { getPortfolioByArtist } from "@/content/portfolio";
-import { siteConfig } from "@/content/site.config";
+import { getQuoteWithArtist, siteConfig } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
 import { Button } from "@/components/ui/Button";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
@@ -34,8 +34,8 @@ export function ArtistCard({ artist }: Props) {
 
   const ctaLabel =
     artist.inquiryType === "large_projects"
-      ? `Ask about a large project`
-      : `Get a quote with ${artist.name}`;
+      ? siteConfig.copy.largeProjectCta
+      : getQuoteWithArtist(artist.name);
 
   function closeLightbox() {
     setLightbox(null);
