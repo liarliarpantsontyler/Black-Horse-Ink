@@ -6,13 +6,13 @@ const raw: SiteConfig = {
     slug: "black-horse-ink",
     tagline: "Fine-line, small & custom tattoos in Justin, Texas.",
     cityState: "Justin, Texas",
-    address: "[STUDIO ADDRESS]",
+    address: "11180 FM156 Unit 103, Justin, TX 76247",
     phoneDisplay: "[PHONE]",
     hours: ["[HOURS — e.g. Tue–Sat 11am–7pm]"],
     parkingNote: "[PARKING INSTRUCTIONS IF NEEDED]",
-    mapsUrl: "https://maps.google.com/?q=[STUDIO+ADDRESS]",
+    mapsUrl: "https://maps.google.com/?q=11180+FM156+Unit+103+Justin+TX+76247",
     instagram: "https://www.instagram.com/blackhorseink/",
-    shopMinimum: "[SHOP MINIMUM]",
+    shopMinimum: "$70",
   },
   copy: {
     primaryCta: "Get a Quote",
@@ -78,7 +78,7 @@ const raw: SiteConfig = {
     {
       id: "minimum",
       question: "What is your shop minimum?",
-      answer: "[SHOP MINIMUM] — we'll confirm for your specific piece when we reply.",
+      answer: "$70 shop minimum — we'll confirm for your specific piece when we reply.",
     },
     {
       id: "walkins",
