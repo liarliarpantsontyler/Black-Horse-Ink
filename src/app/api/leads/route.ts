@@ -6,6 +6,7 @@ import { normalizePhoneToE164, maskPhone } from "@/lib/phone";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createAdminClient, hasSupabaseAdmin } from "@/lib/supabase/admin";
 import { getSmsProvider, renderConfirmationSms } from "@/lib/sms";
+import { notifyStaffOfNewLead } from "@/lib/notifications/staff-lead";
 import { siteConfig } from "@/content/site.config";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -74,6 +75,24 @@ export async function POST(request: Request) {
   const files = form.getAll("references").filter((f): f is File => f instanceof File);
 
   if (!hasSupabaseAdmin()) {
+    const devLeadId = randomUUID();
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const devLeadRecord = {
+      id: devLeadId,
+      first_name: parsed.data.firstName,
+      phone_e164: phoneE164,
+      email: parsed.data.email || null,
+      artist_id: parsed.data.artistId || null,
+      idea: parsed.data.idea,
+      size: parsed.data.size,
+      placement: parsed.data.placement,
+      placement_notes: parsed.data.placementNotes || null,
+      timing: parsed.data.timing || null,
+    };
+    await notifyStaffOfNewLead(
+      devLeadRecord,
+      `${siteUrl}/admin/leads/${devLeadId}`,
+    );
     console.info("[dev] Lead captured without Supabase", {
       ...parsed.data,
       phoneE164,
@@ -212,6 +231,29 @@ export async function POST(request: Request) {
       success: false,
     });
   }
+
+  const staffNotify = await notifyStaffOfNewLead(leadRecord, adminLeadUrl);
+  await supabase.from("communication_logs").insert([
+    {
+      lead_id: leadId,
+      channel: "sms",
+      provider: process.env.SMS_PROVIDER ?? "mock",
+      summary: staffNotify.smsOk
+        ? "Staff notification SMS sent"
+        : (staffNotify.errors.find((e) => e.includes("SMS")) ?? "Staff SMS failed"),
+      success: staffNotify.smsOk,
+    },
+    {
+      lead_id: leadId,
+      channel: "email",
+      provider: process.env.EMAIL_PROVIDER ?? "mock",
+      summary: staffNotify.emailOk
+        ? "Staff notification email sent"
+        : (staffNotify.errors.find((e) => e.includes("email") || e.includes("Resend")) ??
+          "Staff email failed"),
+      success: staffNotify.emailOk,
+    },
+  ]);
 
   return NextResponse.json({ ok: true, phoneMasked: maskPhone(phoneE164) });
 }

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "sync:instagram": "node scripts/sync-instagram.mjs",
+    "sync:google-reviews": "node scripts/sync-google-reviews.mjs",
     "import:instagram": "node scripts/apply-ig-import.mjs"
   },
   "dependencies": {

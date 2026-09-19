@@ -52,3 +52,24 @@ Edit `src/content/portfolio.overrides.json` to fix tags or alt text per portfoli
 ### Terms
 
 Ensure the studio has rights to display and host these images on their website. Automated scraping may violate Meta’s Terms of Service if misused — prefer official exports or licensed assets when available.
+
+## sync-google-reviews.mjs
+
+Pulls public Google Business reviews into `src/content/reviews.generated.json`. The site also fetches live reviews at runtime when `GOOGLE_PLACES_API_KEY` and `studio.googlePlaceId` are set (cached 24h).
+
+### Usage
+
+```bash
+GOOGLE_PLACES_API_KEY=your_key npm run sync:google-reviews
+```
+
+Optional: `GOOGLE_PLACE_ID=ChIJ...` overrides the ID in `site.config.ts`.
+
+### Google Cloud setup
+
+1. Create or use a Google Cloud project.
+2. Enable **Places API (New)** (not legacy Places API unless you adapt the script).
+3. Create an API key; restrict it to Places API (New) and your production domain / server IPs.
+4. Find the studio **Place ID** from the Google Maps listing (Share → embed or Place ID tools).
+
+Reviews shown on the site are limited to what Google returns (typically up to five recent reviews with text).

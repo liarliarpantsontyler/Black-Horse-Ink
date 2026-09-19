@@ -17,4 +17,9 @@ export class MockSmsProvider implements SmsProvider {
     });
     return { messageId: `mock-msg-${lead.id}` };
   }
+
+  async sendMessage(to: string[], messageBody: string) {
+    console.info("[MockSms] sendMessage", { to, body: messageBody });
+    return { messageId: `mock-msg-${Date.now()}` };
+  }
 }

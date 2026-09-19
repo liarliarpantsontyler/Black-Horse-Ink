@@ -64,6 +64,8 @@ export const siteConfigSchema = z.object({
     hours: z.array(z.string()),
     parkingNote: z.string().optional(),
     mapsUrl: z.string().url(),
+    /** Google Maps Place ID (ChIJ…) for live review sync */
+    googlePlaceId: z.string().optional(),
     instagram: z.string().url(),
     shopMinimum: z.string(),
   }),

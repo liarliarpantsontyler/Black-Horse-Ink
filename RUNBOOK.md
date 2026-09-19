@@ -26,8 +26,14 @@ Copy from `.env.example`:
 | `SMS_PROVIDER` | `mock` until Quo is ready, then `quo` |
 | `QUO_API_KEY` | Quo API key (server only) |
 | `QUO_PHONE_NUMBER_ID` | Quo sender ID (`PN…`) |
+| `LEAD_NOTIFY_PHONE` | E.164 number for new-lead SMS alerts (default `+19402524142`) |
+| `LEAD_NOTIFY_EMAIL` | Inbox for new-lead email alerts |
+| `EMAIL_PROVIDER` | `mock` or `resend` |
+| `RESEND_API_KEY` | Resend API key when `EMAIL_PROVIDER=resend` |
+| `RESEND_FROM` | Verified sender address in Resend |
 | `NEXT_PUBLIC_GA_ID` | GA4 measurement ID |
 | `NEXT_PUBLIC_GOOGLE_ADS_ID` | Ads conversion label for `quote_completed` |
+| `GOOGLE_PLACES_API_KEY` | Places API (New) — live Google reviews on homepage |
 
 **Handoff testing:** Keep `SMS_PROVIDER=mock`. Staff receives leads in `/admin/leads` and texts manually from Google Voice. Copy the confirmation message from the lead detail page.
 
@@ -41,6 +47,7 @@ Copy from `.env.example`:
 1. Edit `src/content/site.config.ts` — replace `[CITY, STATE]`, address, hours, shop minimum, FAQ placeholders.
 2. Run Instagram sync locally: `npm run sync:instagram` (see `scripts/README.md`).
 3. Commit updated images + `portfolio.generated.json`.
+4. **Google reviews:** In [Google Maps](https://www.google.com/maps), open the studio listing → Share → copy the Place ID (or use Place ID finder). Set `studio.googlePlaceId` in `src/content/site.config.ts`. Enable **Places API (New)** on the Google Cloud project, create an API key restricted to that API, and set `GOOGLE_PLACES_API_KEY` in Vercel. Optionally run `npm run sync:google-reviews` and commit `reviews.generated.json` as a fallback when the API is unavailable at build time.
 
 ## 5. Switch to Quo (production SMS)
 

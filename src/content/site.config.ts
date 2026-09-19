@@ -11,6 +11,7 @@ const raw: SiteConfig = {
     hours: ["[HOURS — e.g. Tue–Sat 11am–7pm]"],
     parkingNote: "[PARKING INSTRUCTIONS IF NEEDED]",
     mapsUrl: "https://maps.google.com/?q=11180+FM156+Unit+103+Justin+TX+76247",
+    googlePlaceId: "ChIJBwnN-YjFTYYRSLQ8AeEf8mg",
     instagram: "https://www.instagram.com/blackhorseink/",
     shopMinimum: "$70",
   },

@@ -17,4 +17,8 @@ export interface SmsProvider {
     lead: LeadRecord,
     messageBody: string,
   ): Promise<{ messageId?: string }>;
+  sendMessage(
+    to: string[],
+    messageBody: string,
+  ): Promise<{ messageId?: string }>;
 }

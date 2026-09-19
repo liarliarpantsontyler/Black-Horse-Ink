@@ -43,13 +43,17 @@ export class QuoSmsProvider implements SmsProvider {
   }
 
   async sendConfirmation(lead: LeadRecord, messageBody: string) {
+    return this.sendMessage([lead.phone_e164], messageBody);
+  }
+
+  async sendMessage(to: string[], messageBody: string) {
     const res = await fetch(`${API_BASE}/messages`, {
       method: "POST",
       headers: this.headers(),
       body: JSON.stringify({
         content: messageBody,
         from: this.phoneNumberId,
-        to: [lead.phone_e164],
+        to,
       }),
     });
 

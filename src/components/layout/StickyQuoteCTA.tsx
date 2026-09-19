@@ -10,7 +10,7 @@ export function StickyQuoteCTA() {
   if (isOpen) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border/70 bg-background/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-white p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
       <Button
         type="button"
         fullWidth
@@ -23,7 +23,7 @@ export function StickyQuoteCTA() {
       <p className="mt-2 text-center text-sm font-medium leading-snug text-response-highlight">
         {siteConfig.copy.responseTimeCopy}
       </p>
-      <p className="mt-1 text-center text-sm text-muted">{siteConfig.copy.stickySubtext}</p>
+      <p className="mt-1 text-center text-sm text-black/80">{siteConfig.copy.stickySubtext}</p>
     </div>
   );
 }
