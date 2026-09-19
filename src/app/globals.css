@@ -34,6 +34,20 @@ body {
   font-family: var(--font-instrument-serif), Georgia, serif;
 }
 
+@keyframes hero-tile-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -5px;
+  }
+}
+
+.hero-gallery-tile {
+  animation: hero-tile-float 3.6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
