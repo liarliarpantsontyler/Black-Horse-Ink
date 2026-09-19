@@ -1,0 +1,233 @@
+[
+  {
+    "id": "lucia-ig-DUYaZuxDoL1",
+    "image": "/images/portfolio/lucia/DUYaZuxDoL1.jpg",
+    "alt": "Fine-line tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": true
+  },
+  {
+    "id": "lucia-ig-DccMomuliWI",
+    "image": "/images/portfolio/lucia/DccMomuliWI.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": true
+  },
+  {
+    "id": "lucia-ig-DbZfAb3SevA",
+    "image": "/images/portfolio/lucia/DbZfAb3SevA.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": false
+  },
+  {
+    "id": "lucia-ig-Dal1JVcGLv1",
+    "image": "/images/portfolio/lucia/Dal1JVcGLv1.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": false
+  },
+  {
+    "id": "lucia-ig-DZi45DYSQfM",
+    "image": "/images/portfolio/lucia/DZi45DYSQfM.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": false
+  },
+  {
+    "id": "lucia-ig-DYf_hvySsYL",
+    "image": "/images/portfolio/lucia/DYf_hvySsYL.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": false
+  },
+  {
+    "id": "lucia-ig-DYNZYg8FvqA",
+    "image": "/images/portfolio/lucia/DYNZYg8FvqA.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": false
+  },
+  {
+    "id": "lucia-ig-DYIM_DPllrM",
+    "image": "/images/portfolio/lucia/DYIM_DPllrM.jpg",
+    "alt": "Tattoo work by Lucia",
+    "artistId": "lucia",
+    "tags": [
+      "fine-line",
+      "small"
+    ],
+    "featured": false
+  },
+  {
+    "id": "juan-ig-DMwGEuOgweC",
+    "image": "/images/portfolio/juan/DMwGEuOgweC.jpg",
+    "alt": "Custom tattoo by Juan",
+    "artistId": "juan",
+    "tags": [
+      "small",
+      "medium"
+    ],
+    "featured": true
+  },
+  {
+    "id": "juan-ig-DPhxqzvgAlL",
+    "image": "/images/portfolio/juan/DPhxqzvgAlL.jpg",
+    "alt": "Matching friendship tattoo by Juan",
+    "artistId": "juan",
+    "tags": [
+      "small",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "juan-ig-DVRas7sGXVt",
+    "image": "/images/portfolio/juan/DVRas7sGXVt.jpg",
+    "alt": "Tattoo work by Juan",
+    "artistId": "juan",
+    "tags": [
+      "small",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "juan-ig-DTTT5gMgNpz",
+    "image": "/images/portfolio/juan/DTTT5gMgNpz.jpg",
+    "alt": "Tattoo work by Juan",
+    "artistId": "juan",
+    "tags": [
+      "small",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "juan-ig-DSWM_wtgF4y",
+    "image": "/images/portfolio/juan/DSWM_wtgF4y.jpg",
+    "alt": "Pokémon tattoo by Juan",
+    "artistId": "juan",
+    "tags": [
+      "small",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "juan-ig-DSI7v0ygJn1",
+    "image": "/images/portfolio/juan/DSI7v0ygJn1.jpg",
+    "alt": "Tattoo work by Juan",
+    "artistId": "juan",
+    "tags": [
+      "small",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "marcos-ig-DdY6wQTjW0h",
+    "image": "/images/portfolio/marcos/DdY6wQTjW0h.jpg",
+    "alt": "Large tattoo work at Black Horse Ink by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": true
+  },
+  {
+    "id": "marcos-ig-DdAqelQNnNI",
+    "image": "/images/portfolio/marcos/DdAqelQNnNI.jpg",
+    "alt": "Custom tattoo by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": true
+  },
+  {
+    "id": "marcos-ig-Dc3wI44xxlO",
+    "image": "/images/portfolio/marcos/Dc3wI44xxlO.jpg",
+    "alt": "Tattoo work by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "marcos-ig-Dcd7tkCkSqn",
+    "image": "/images/portfolio/marcos/Dcd7tkCkSqn.jpg",
+    "alt": "Tattoo work by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "marcos-ig-DbRv3bGNcTn",
+    "image": "/images/portfolio/marcos/DbRv3bGNcTn.jpg",
+    "alt": "Tattoo work by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "marcos-ig-Dbyd1S8ET7U",
+    "image": "/images/portfolio/marcos/Dbyd1S8ET7U.jpg",
+    "alt": "Tattoo work by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": false
+  },
+  {
+    "id": "marcos-ig-DboYM_gDdOF",
+    "image": "/images/portfolio/marcos/DboYM_gDdOF.jpg",
+    "alt": "Tattoo work by Marcos",
+    "artistId": "marcos",
+    "tags": [
+      "large",
+      "medium"
+    ],
+    "featured": false
+  }
+]
