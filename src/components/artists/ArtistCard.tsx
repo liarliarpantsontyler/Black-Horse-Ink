@@ -18,9 +18,7 @@ type Props = {
   artist: Artist;
 };
 
-type LightboxState =
-  | { type: "portrait"; src: string; alt: string }
-  | { type: "work"; item: PortfolioItem };
+type LightboxState = { item: PortfolioItem };
 
 export function ArtistCard({ artist }: Props) {
   const { openQuote } = useQuote();
@@ -59,26 +57,15 @@ export function ArtistCard({ artist }: Props) {
           deemph ? "border-border/40 opacity-95" : "border-border/70",
         ].join(" ")}
       >
-        <button
-          type="button"
-          className="relative aspect-square w-full cursor-zoom-in overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          aria-label={`View photo of ${artist.name}`}
-          onClick={() =>
-            setLightbox({
-              type: "portrait",
-              src: artist.portrait,
-              alt: `Portrait of ${artist.name}`,
-            })
-          }
-        >
+        <div className="relative aspect-square w-full overflow-hidden">
           <Image
             src={artist.portrait}
-            alt=""
+            alt={`Portrait of ${artist.name}`}
             fill
-            className="object-cover transition-transform duration-300 hover:scale-[1.02]"
+            className="object-cover"
             sizes="(max-width:768px) 100vw, 33vw"
           />
-        </button>
+        </div>
         <div className="flex flex-1 flex-col gap-3 p-4 md:p-5">
           <div>
             <h3 className="font-display text-2xl">{artist.name}</h3>
@@ -100,7 +87,7 @@ export function ArtistCard({ artist }: Props) {
                 type="button"
                 className="relative aspect-square cursor-zoom-in overflow-hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 aria-label={`View tattoo: ${t.alt}`}
-                onClick={() => setLightbox({ type: "work", item: t })}
+                onClick={() => setLightbox({ item: t })}
               >
                 <Image src={t.image} alt="" fill className="object-cover" sizes="80px" />
               </button>
@@ -129,18 +116,14 @@ export function ArtistCard({ artist }: Props) {
 
       {lightbox && (
         <ImageLightbox
-          src={lightbox.type === "portrait" ? lightbox.src : lightbox.item.image}
-          alt={lightbox.type === "portrait" ? lightbox.alt : lightbox.item.alt}
+          src={lightbox.item.image}
+          alt={lightbox.item.alt}
           onClose={closeLightbox}
-          artistName={lightbox.type === "work" ? artist.name : undefined}
-          onQuote={
-            lightbox.type === "work"
-              ? () => {
-                  closeLightbox();
-                  openQuote(artist.id);
-                }
-              : undefined
-          }
+          artistName={artist.name}
+          onQuote={() => {
+            closeLightbox();
+            openQuote(artist.id);
+          }}
         />
       )}
     </>
