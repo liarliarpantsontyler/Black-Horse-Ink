@@ -130,7 +130,8 @@ const raw: SiteConfig = {
     {
       id: "location",
       question: "Where are you located?",
-      answer: "We're at [STUDIO ADDRESS] in Justin, Texas. Tap Get Directions on this page for maps.",
+      answer:
+        "We're at 11180 FM156 Unit 103, Justin, TX 76247. Tap Get Directions on this page for maps.",
     },
     {
       id: "prep",
