@@ -14,9 +14,12 @@ const LOGO_PREVIEW_KEY = "bhi_logo_preview";
 
 export function Header() {
   const { openQuote } = useQuote();
-  const [visible, setVisible] = useState(true);
   const [logoVersion, setLogoVersion] = useState<1 | 2>(1);
+  const headerRef = useRef<HTMLElement>(null);
   const lastScrollY = useRef(0);
+  const hideOffsetRef = useRef(0);
+  const headerHeightRef = useRef(0);
+  const scrollRafRef = useRef<number | null>(null);
 
   useEffect(() => {
     try {
@@ -37,39 +40,94 @@ export function Header() {
   }
 
   useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
     const media = window.matchMedia("(max-width: 767px)");
 
-    function onScroll() {
+    const measureHeader = () => {
+      headerHeightRef.current = header.offsetHeight;
+    };
+
+    measureHeader();
+    const ro = new ResizeObserver(measureHeader);
+    ro.observe(header);
+
+    const applyHideOffset = () => {
+      const offset = hideOffsetRef.current;
       if (!media.matches) {
-        setVisible(true);
+        header.style.transform = "";
+        return;
+      }
+      header.style.transform = `translate3d(0, ${-offset}px, 0)`;
+    };
+
+    const scheduleApply = () => {
+      if (scrollRafRef.current !== null) return;
+      scrollRafRef.current = requestAnimationFrame(() => {
+        scrollRafRef.current = null;
+        applyHideOffset();
+      });
+    };
+
+    const onScroll = () => {
+      if (!media.matches) {
+        hideOffsetRef.current = 0;
+        scheduleApply();
         return;
       }
 
       const y = window.scrollY;
-      if (y <= 8) {
-        setVisible(true);
-      } else if (y > lastScrollY.current + 6) {
-        setVisible(false);
-      } else if (y < lastScrollY.current - 6) {
-        setVisible(true);
-      }
+      const delta = y - lastScrollY.current;
       lastScrollY.current = y;
-    }
 
+      const maxHide = headerHeightRef.current;
+      if (maxHide <= 0) {
+        measureHeader();
+        return;
+      }
+
+      if (y <= 8) {
+        hideOffsetRef.current = 0;
+      } else {
+        hideOffsetRef.current = Math.max(
+          0,
+          Math.min(maxHide, hideOffsetRef.current + delta),
+        );
+      }
+
+      scheduleApply();
+    };
+
+    const onMediaChange = () => {
+      if (!media.matches) hideOffsetRef.current = 0;
+      scheduleApply();
+    };
+
+    media.addEventListener("change", onMediaChange);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    return () => {
+      ro.disconnect();
+      media.removeEventListener("change", onMediaChange);
+      window.removeEventListener("scroll", onScroll);
+      if (scrollRafRef.current !== null) {
+        cancelAnimationFrame(scrollRafRef.current);
+      }
+      header.style.transform = "";
+    };
   }, []);
 
   const isV2 = logoVersion === 2;
 
   return (
     <header
+      ref={headerRef}
       className={[
-        "sticky top-0 z-40 border-b shadow-sm transition-[transform,background-color,color,border-color] duration-300 ease-out will-change-transform",
+        "sticky top-0 z-40 border-b shadow-sm will-change-transform transition-[background-color,color,border-color,box-shadow] duration-300 ease-out md:translate-y-0",
         isV2
           ? "border-neutral-800 bg-black text-white"
           : "border-neutral-200/90 bg-white text-neutral-900",
-        visible ? "translate-y-0" : "-translate-y-full md:translate-y-0",
       ].join(" ")}
     >
       <div className="relative mx-auto flex h-[5.5625rem] max-w-6xl items-center justify-center px-4 md:h-auto md:justify-between md:py-3 md:px-6">
