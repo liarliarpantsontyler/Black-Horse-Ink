@@ -16,6 +16,7 @@ const raw: SiteConfig = {
   },
   copy: {
     primaryCta: "Get a Quote",
+    stickyPrimaryCta: "Get a Quote or Book a Session",
     startQuoteCta: "Start a Quote",
     submitQuoteCta: "Send My Tattoo",
     largeProjectCta: "Ask About a Large Project",

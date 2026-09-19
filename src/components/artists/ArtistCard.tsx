@@ -148,8 +148,10 @@ export function ArtistSelectorSection() {
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <h2 className="font-display text-3xl md:text-4xl">Who do you want to work with?</h2>
         <p className="mt-2 max-w-lg text-muted">
-          {siteConfig.copy.responseTimeCopy}. {siteConfig.copy.primaryCta} by text — no
-          phone call needed.
+          <span className="font-medium text-response-highlight">
+            {siteConfig.copy.responseTimeCopy}
+          </span>
+          . {siteConfig.copy.primaryCta} by text — no phone call needed.
         </p>
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           {siteConfig.artists.map((artist) => (

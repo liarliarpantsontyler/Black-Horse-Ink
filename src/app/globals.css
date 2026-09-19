@@ -4,11 +4,12 @@
   --background: #0a0a0a;
   --foreground: #f2efe8;
   --muted: #a8a299;
-  --accent: #c4a574;
-  --accent-strong: #9a7340;
+  --accent: #e2b759;
+  --accent-strong: #c9922a;
   --border: #2a2826;
   --surface: #121110;
   --surface-elevated: #1a1917;
+  --response-highlight: #1877f2;
 }
 
 @theme inline {
@@ -20,14 +21,23 @@
   --color-border: var(--border);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
+  --color-response-highlight: var(--response-highlight);
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-instrument-serif);
+  /* Site minimum readable size (14px); replaces default 12px text-xs */
+  --text-xs: 0.875rem;
+  --text-xs--line-height: 1.25rem;
+}
+
+html {
+  font-size: max(14px, 100%);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 1rem;
 }
 
 .font-display {
@@ -40,7 +50,7 @@ body {
     translate: 0 0;
   }
   50% {
-    translate: 0 -5px;
+    translate: 0 -10px;
   }
 }
 

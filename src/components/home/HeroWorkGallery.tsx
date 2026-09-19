@@ -44,7 +44,7 @@ function GalleryTile({ item, dragExtraRotate, onTap }: GalleryTileProps) {
 
   return (
     <div
-      className="hero-gallery-tile relative h-36 w-[108px] shrink-0 snap-center md:h-40 md:w-[120px]"
+      className="hero-gallery-tile relative h-[19.5rem] w-[234px] shrink-0 snap-center md:h-[22.5rem] md:w-[270px]"
       style={{ animationDelay: `${floatDelay}s` }}
     >
       <button
@@ -73,10 +73,10 @@ function GalleryTile({ item, dragExtraRotate, onTap }: GalleryTileProps) {
           <Image
             src={item.image}
             alt=""
-            width={360}
-            height={480}
+            width={540}
+            height={720}
             className="h-full w-full object-cover"
-            sizes="120px"
+            sizes="(max-width:768px) 234px, 270px"
             draggable={false}
           />
         </span>
@@ -228,20 +228,22 @@ export function HeroWorkGallery() {
 
   return (
     <>
-      <div
-        ref={scrollRef}
-        className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        style={{ touchAction: "pan-x" }}
-        aria-label="Recent tattoo work"
-      >
-        {trackItems.map((item, i) => (
-          <GalleryTile
-            key={`${item.id}-${i}`}
-            item={item}
-            dragExtraRotate={dragExtraRotate}
-            onTap={handleTap}
-          />
-        ))}
+      <div className="-mx-4 overflow-visible">
+        <div
+          ref={scrollRef}
+          className="hero-gallery-scroll flex items-center gap-4 overflow-x-auto px-4 py-4 md:gap-5 md:py-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ touchAction: "pan-x" }}
+          aria-label="Recent tattoo work"
+        >
+          {trackItems.map((item, i) => (
+            <GalleryTile
+              key={`${item.id}-${i}`}
+              item={item}
+              dragExtraRotate={dragExtraRotate}
+              onTap={handleTap}
+            />
+          ))}
+        </div>
       </div>
 
       {active && (

@@ -19,8 +19,8 @@ export function Hero({
     siteConfig.studio.tagline.replace("[CITY, STATE]", siteConfig.studio.cityState);
 
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10">
+    <section className="relative">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <Image
           src="/images/hero.jpg"
           alt=""
@@ -36,9 +36,11 @@ export function Hero({
           {title}
         </h1>
         <p className="max-w-md text-base text-muted md:text-lg">{sub}</p>
-        <HeroWorkGallery />
         <p className="text-sm leading-snug text-muted">{siteConfig.copy.ctaSubtext}</p>
-        <p className="text-xs text-muted/80">{siteConfig.copy.responseTimeCopy}</p>
+        <p className="text-sm font-medium text-response-highlight">
+          {siteConfig.copy.responseTimeCopy}
+        </p>
+        <HeroWorkGallery />
       </div>
     </section>
   );

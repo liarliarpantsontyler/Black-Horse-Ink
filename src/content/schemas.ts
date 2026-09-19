@@ -69,6 +69,7 @@ export const siteConfigSchema = z.object({
   }),
   copy: z.object({
     primaryCta: z.string(),
+    stickyPrimaryCta: z.string(),
     startQuoteCta: z.string(),
     submitQuoteCta: z.string(),
     largeProjectCta: z.string(),

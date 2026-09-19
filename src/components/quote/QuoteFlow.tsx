@@ -168,7 +168,9 @@ export function QuoteFlow() {
                 ))}
               </div>
               {step !== "success" && (
-                <p className="mt-2 text-xs leading-snug text-muted">{responseTimeLine}</p>
+                <p className="mt-2 text-xs font-medium leading-snug text-response-highlight">
+                  {responseTimeLine}
+                </p>
               )}
             </div>
             <button
