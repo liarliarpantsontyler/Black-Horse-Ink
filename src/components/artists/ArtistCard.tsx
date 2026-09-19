@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useState } from "react";
+import { LetterFadeDisplay } from "@/components/ui/LetterFadeDisplay";
+import { useFadeInView } from "@/components/ui/useFadeInView";
 import type { Artist, PortfolioItem } from "@/content/schemas";
 import { getPortfolioByArtist } from "@/content/portfolio";
 import { getQuoteWithArtist, siteConfig } from "@/content/site.config";
@@ -143,16 +146,23 @@ export function ArtistCard({ artist }: Props) {
 }
 
 export function ArtistSelectorSection() {
+  const fadeIntro = useFadeInView(0.08);
+
   return (
-    <section id="artists" className="scroll-mt-20 py-16 md:py-24">
+    <section id="artists" className="scroll-mt-20 pb-16 pt-0 md:pb-24">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
-        <h2 className="font-display text-3xl md:text-4xl">Who do you want to work with?</h2>
-        <p className="mt-2 max-w-lg text-muted">
+        <LetterFadeDisplay
+          as="h2"
+          when="inView"
+          text="Who do you want to work with?"
+          className="font-display text-3xl md:text-4xl"
+        />
+        <motion.p {...fadeIntro} className="mt-2 max-w-lg text-muted">
           <span className="font-medium text-response-highlight">
             {siteConfig.copy.responseTimeCopy}
           </span>
           . {siteConfig.copy.primaryCta} by text — no phone call needed.
-        </p>
+        </motion.p>
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           {siteConfig.artists.map((artist) => (
             <ArtistCard key={artist.id} artist={artist} />

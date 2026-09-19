@@ -58,6 +58,12 @@ body {
   animation: hero-tile-float 3.6s ease-in-out infinite;
 }
 
+.hero-gallery-viewport {
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

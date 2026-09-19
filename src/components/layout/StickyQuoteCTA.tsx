@@ -9,8 +9,8 @@ function ArrowRightIcon() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 256 256"
-      width={20}
-      height={20}
+      width={18}
+      height={18}
       aria-hidden
       className="shrink-0 text-black"
     >
@@ -47,7 +47,7 @@ export function StickyQuoteCTA() {
         type="button"
         fullWidth
         onClick={() => openQuote()}
-        className="min-h-[3.25rem] gap-2.5 px-5 text-[20px] font-semibold leading-tight text-black hover:text-black/90"
+        className="min-h-[3.25rem] gap-2.5 px-5 text-[18px] font-semibold leading-tight text-black hover:text-black/90"
       >
         {siteConfig.copy.stickyPrimaryCta}
         <ArrowRightIcon />

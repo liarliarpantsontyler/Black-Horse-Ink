@@ -44,7 +44,7 @@ function GalleryTile({ item, dragExtraRotate, onTap }: GalleryTileProps) {
 
   return (
     <div
-      className="hero-gallery-tile relative h-[19.5rem] w-[234px] shrink-0 snap-center md:h-[22.5rem] md:w-[270px]"
+      className="hero-gallery-tile relative h-[19.5rem] w-[234px] shrink-0 md:h-[22.5rem] md:w-[270px]"
       style={{ animationDelay: `${floatDelay}s` }}
     >
       <button
@@ -95,7 +95,9 @@ export function HeroWorkGallery() {
   const [active, setActive] = useState<PortfolioItem | null>(null);
   const [dragExtraRotate, setDragExtraRotate] = useState(0);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const scrollXRef = useRef(0);
   const segmentWidthRef = useRef(0);
   const userInteractingRef = useRef(false);
   const lastPointerXRef = useRef<number | null>(null);
@@ -103,18 +105,37 @@ export function HeroWorkGallery() {
   const rafRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef<number | null>(null);
 
+  const applyTransform = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.style.transform = `translate3d(${-scrollXRef.current}px, 0, 0)`;
+  }, []);
+
+  const normalizeScroll = useCallback(() => {
+    const segment = segmentWidthRef.current;
+    if (segment <= 0) return;
+    const edge = segment * 0.05;
+    if (scrollXRef.current <= edge) {
+      scrollXRef.current += segment;
+    } else if (scrollXRef.current >= segment * 2 - edge) {
+      scrollXRef.current -= segment;
+    }
+    applyTransform();
+  }, [applyTransform]);
+
   const measureSegment = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el || sequence.length === 0) return;
-    segmentWidthRef.current = el.scrollWidth / 3;
+    const track = trackRef.current;
+    if (!track || sequence.length === 0) return;
+    segmentWidthRef.current = track.offsetWidth / 3;
   }, [sequence.length]);
 
   useLayoutEffect(() => {
     measureSegment();
-    const el = scrollRef.current;
-    if (!el || segmentWidthRef.current <= 0) return;
-    el.scrollLeft = segmentWidthRef.current;
-  }, [measureSegment, trackItems]);
+    const segment = segmentWidthRef.current;
+    if (segment <= 0) return;
+    scrollXRef.current = segment;
+    applyTransform();
+  }, [measureSegment, trackItems, applyTransform]);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -127,38 +148,18 @@ export function HeroWorkGallery() {
   }, []);
 
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const onResize = () => measureSegment();
+    const onResize = () => {
+      measureSegment();
+      normalizeScroll();
+    };
     window.addEventListener("resize", onResize);
-
-    const onScroll = () => {
-      const segment = segmentWidthRef.current;
-      if (segment <= 0) return;
-      const { scrollLeft } = el;
-      const edge = segment * 0.05;
-      if (scrollLeft <= edge) {
-        el.scrollLeft = scrollLeft + segment;
-      } else if (scrollLeft >= segment * 2 - edge) {
-        el.scrollLeft = scrollLeft - segment;
-      }
-    };
-
-    el.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("resize", onResize);
-      el.removeEventListener("scroll", onScroll);
-    };
-  }, [measureSegment]);
+    return () => window.removeEventListener("resize", onResize);
+  }, [measureSegment, normalizeScroll]);
 
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
 
-    const pause = () => {
-      userInteractingRef.current = true;
-    };
     const resume = () => {
       userInteractingRef.current = false;
       lastPointerXRef.current = null;
@@ -166,49 +167,62 @@ export function HeroWorkGallery() {
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      pause();
+      userInteractingRef.current = true;
       lastPointerXRef.current = e.clientX;
-    };
-    const onPointerMove = (e: PointerEvent) => {
-      if (lastPointerXRef.current === null) return;
-      const delta = e.clientX - lastPointerXRef.current;
-      lastPointerXRef.current = e.clientX;
-      setDragExtraRotate((r) => Math.max(-6, Math.min(6, r + delta * 0.08)));
+      viewport.setPointerCapture(e.pointerId);
     };
 
-    el.addEventListener("pointerdown", onPointerDown);
-    el.addEventListener("pointermove", onPointerMove);
-    el.addEventListener("pointerup", resume);
-    el.addEventListener("pointercancel", resume);
-    el.addEventListener("touchstart", pause, { passive: true });
-    el.addEventListener("touchend", resume);
+    const onPointerMove = (e: PointerEvent) => {
+      if (lastPointerXRef.current === null) return;
+      const deltaX = e.clientX - lastPointerXRef.current;
+      lastPointerXRef.current = e.clientX;
+      scrollXRef.current -= deltaX;
+      setDragExtraRotate((r) => Math.max(-6, Math.min(6, r + deltaX * 0.08)));
+      normalizeScroll();
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+      if (viewport.hasPointerCapture(e.pointerId)) {
+        viewport.releasePointerCapture(e.pointerId);
+      }
+      resume();
+    };
+
     let wheelResumeTimer: ReturnType<typeof setTimeout>;
-    const onWheel = () => {
-      pause();
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      userInteractingRef.current = true;
+      const delta =
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      scrollXRef.current += delta;
+      normalizeScroll();
       clearTimeout(wheelResumeTimer);
       wheelResumeTimer = setTimeout(resume, 400);
     };
-    el.addEventListener("wheel", onWheel, { passive: true });
+
+    viewport.addEventListener("pointerdown", onPointerDown);
+    viewport.addEventListener("pointermove", onPointerMove);
+    viewport.addEventListener("pointerup", onPointerUp);
+    viewport.addEventListener("pointercancel", onPointerUp);
+    viewport.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      el.removeEventListener("pointerdown", onPointerDown);
-      el.removeEventListener("pointermove", onPointerMove);
-      el.removeEventListener("pointerup", resume);
-      el.removeEventListener("pointercancel", resume);
-      el.removeEventListener("touchstart", pause);
-      el.removeEventListener("touchend", resume);
-      el.removeEventListener("wheel", onWheel);
+      viewport.removeEventListener("pointerdown", onPointerDown);
+      viewport.removeEventListener("pointermove", onPointerMove);
+      viewport.removeEventListener("pointerup", onPointerUp);
+      viewport.removeEventListener("pointercancel", onPointerUp);
+      viewport.removeEventListener("wheel", onWheel);
       clearTimeout(wheelResumeTimer);
     };
-  }, []);
+  }, [normalizeScroll]);
 
   useEffect(() => {
     const tick = (now: number) => {
-      const el = scrollRef.current;
-      if (el && !reduceMotionRef.current && !userInteractingRef.current) {
+      if (!reduceMotionRef.current && !userInteractingRef.current) {
         const last = lastFrameTimeRef.current ?? now;
         const dt = (now - last) / 1000;
-        el.scrollLeft += AUTO_SCROLL_PX_PER_SEC * dt;
+        scrollXRef.current += AUTO_SCROLL_PX_PER_SEC * dt;
+        normalizeScroll();
       }
       lastFrameTimeRef.current = now;
       rafRef.current = requestAnimationFrame(tick);
@@ -217,7 +231,7 @@ export function HeroWorkGallery() {
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [normalizeScroll]);
 
   function handleTap(item: PortfolioItem) {
     trackEvent("hero_gallery_tap", { artist_id: item.artistId });
@@ -230,19 +244,23 @@ export function HeroWorkGallery() {
     <>
       <div className="-mx-4 overflow-visible">
         <div
-          ref={scrollRef}
-          className="hero-gallery-scroll flex items-center gap-4 overflow-x-auto px-4 py-4 md:gap-5 md:py-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ touchAction: "pan-x" }}
+          ref={viewportRef}
+          className="hero-gallery-viewport overflow-visible px-4 py-4 md:py-5"
           aria-label="Recent tattoo work"
         >
-          {trackItems.map((item, i) => (
-            <GalleryTile
-              key={`${item.id}-${i}`}
-              item={item}
-              dragExtraRotate={dragExtraRotate}
-              onTap={handleTap}
-            />
-          ))}
+          <div
+            ref={trackRef}
+            className="flex w-max items-center gap-4 will-change-transform md:gap-5"
+          >
+            {trackItems.map((item, i) => (
+              <GalleryTile
+                key={`${item.id}-${i}`}
+                item={item}
+                dragExtraRotate={dragExtraRotate}
+                onTap={handleTap}
+              />
+            ))}
+          </div>
         </div>
       </div>
 

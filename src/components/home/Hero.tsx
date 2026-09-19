@@ -1,8 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { siteConfig } from "@/content/site.config";
 import { HeroWorkGallery } from "@/components/home/HeroWorkGallery";
+import { LetterFadeDisplay } from "@/components/ui/LetterFadeDisplay";
+import { useFadeInView } from "@/components/ui/useFadeInView";
+import { motion } from "framer-motion";
 
 type HeroProps = {
   title?: string;
@@ -14,32 +16,34 @@ export function Hero({
   title = "Your next tattoo starts here.",
   subtitle,
 }: HeroProps) {
+  const fadeTagline = useFadeInView(0.12);
+  const fadeResponse = useFadeInView(0.28);
   const sub =
     subtitle ??
     siteConfig.studio.tagline.replace("[CITY, STATE]", siteConfig.studio.cityState);
 
   return (
-    <section className="relative">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <Image
-          src="/images/hero.jpg"
-          alt=""
-          fill
-          priority
-          className="object-cover opacity-50"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/80 to-background" />
-      </div>
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 pb-12 pt-12 md:gap-5 md:px-6 md:pb-24 md:pt-20">
-        <h1 className="font-display max-w-xl text-4xl leading-tight tracking-tight md:text-6xl">
-          {title}
-        </h1>
-        <p className="max-w-md text-base text-muted md:text-lg">{sub}</p>
-        <p className="text-sm leading-snug text-muted">{siteConfig.copy.ctaSubtext}</p>
-        <p className="text-sm font-medium text-response-highlight">
-          {siteConfig.copy.responseTimeCopy}
-        </p>
+    <section className="bg-background">
+      <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 pb-0 pt-8 md:gap-6 md:px-6 md:pt-16">
+        <div className="flex max-w-xl flex-col gap-1.5">
+          <LetterFadeDisplay
+            as="h1"
+            text={title}
+            className="font-display text-4xl leading-[1.1] tracking-tight md:text-6xl"
+          />
+          <motion.p
+            {...fadeTagline}
+            className="max-w-md text-base leading-snug text-muted md:text-lg"
+          >
+            {sub}
+          </motion.p>
+          <motion.p
+            {...fadeResponse}
+            className="text-sm font-medium leading-snug text-response-highlight"
+          >
+            {siteConfig.copy.responseTimeCopy}
+          </motion.p>
+        </div>
         <HeroWorkGallery />
       </div>
     </section>
