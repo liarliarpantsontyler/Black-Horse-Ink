@@ -45,6 +45,15 @@ body {
   font-size: 1rem;
 }
 
+/* Quote flow halfsheet — light surface on dark site (keep --background for gold CTA text) */
+.quote-sheet {
+  --foreground: #0a0a0a;
+  --muted: #525252;
+  --surface: #fafafa;
+  --surface-elevated: #f0f0ef;
+  --border: #e5e5e5;
+}
+
 .font-display {
   font-family: var(--font-instrument-serif), Georgia, serif;
 }

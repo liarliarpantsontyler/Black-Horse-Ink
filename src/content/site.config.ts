@@ -28,7 +28,7 @@ const raw: SiteConfig = {
     responseTimeCopy: "Usually replies within minutes during shop hours",
     artistResponseTimeTemplate: "{{artistName}} usually responds in minutes",
     smsConsent:
-      "By submitting, you agree to receive text messages related to your tattoo inquiry. Message and data rates may apply. Reply STOP to opt out.",
+      "By submitting, you agree to receive texts related to your tattoo inquiry.",
     confirmationSmsTemplate:
       "Hey {{firstName}}, this is {{studioName}} 👋 We got your tattoo request. Someone from the shop will take a look and text you here shortly. Feel free to reply if there's anything else you want us to know.",
   },

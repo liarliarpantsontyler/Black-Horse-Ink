@@ -7,7 +7,6 @@ import { siteConfig, getArtistById } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
 import { getAttribution } from "@/lib/attribution";
 import { trackEvent } from "@/lib/analytics";
-import { maskPhone } from "@/lib/phone";
 import { Button } from "@/components/ui/Button";
 import {
   PLACEMENT_OPTIONS,
@@ -121,7 +120,7 @@ export function QuoteFlow() {
         getArtistById(draft.artistId ?? artistId ?? "")?.name ??
         siteConfig.studio.name;
       setSuccessArtistName(resolvedArtist);
-      setSubmittedPhone(data.phoneMasked ?? maskPhone(draft.phone ?? ""));
+      setSubmittedPhone(draft.phone?.trim() || undefined);
       clearDraft();
       setStep("success");
     } catch (e) {
@@ -148,34 +147,32 @@ export function QuoteFlow() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}
         transition={transition}
-        className="relative flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-border/60 bg-background md:max-h-[90vh] md:max-w-lg md:rounded-3xl"
+        className="quote-sheet relative flex max-h-[95dvh] w-full flex-col overflow-hidden rounded-t-3xl border border-black/10 bg-white text-black md:max-h-[90vh] md:max-w-lg md:rounded-3xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby="quote-title"
       >
-        <div className="border-b border-border/50 px-5 py-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap gap-1.5" aria-hidden>
-                {stepOrder.map((s, i) => (
-                  <span
-                    key={s}
-                    className={[
-                      "h-1.5 w-6 rounded-full",
-                      i <= progressIndex ? "bg-accent" : "bg-border",
-                    ].join(" ")}
-                  />
-                ))}
-              </div>
-              {step !== "success" && (
-                <p className="mt-2 text-xs font-medium leading-snug text-response-highlight">
-                  {responseTimeLine}
-                </p>
-              )}
+        <div className="space-y-2 border-b border-black/10 px-5 py-4">
+          {step !== "success" && (
+            <p className="text-[16px] font-medium leading-snug text-response-highlight">
+              {responseTimeLine}
+            </p>
+          )}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5" aria-hidden>
+              {stepOrder.map((s, i) => (
+                <span
+                  key={s}
+                  className={[
+                    "h-1.5 w-6 rounded-full",
+                    i <= progressIndex ? "bg-accent" : "bg-border",
+                  ].join(" ")}
+                />
+              ))}
             </div>
             <button
               type="button"
-              className="min-h-10 shrink-0 px-2 text-sm text-muted"
+              className="min-h-10 shrink-0 px-2 text-sm text-black/70 hover:text-black"
               onClick={closeQuote}
             >
               Close
@@ -437,12 +434,6 @@ export function QuoteFlow() {
                     onChange={(e) => setWebsite(e.target.value)}
                   />
                 </div>
-                <p className="mt-4 text-xs leading-relaxed text-muted">
-                  {siteConfig.copy.smsConsent}{" "}
-                  <Link href="/privacy" className="underline">
-                    Privacy Policy
-                  </Link>
-                </p>
                 {error && (
                   <p className="mt-3 text-sm text-red-400" role="alert">
                     {error}
@@ -457,16 +448,13 @@ export function QuoteFlow() {
                 >
                   {submitting ? "Sending…" : siteConfig.copy.submitQuoteCta}
                 </Button>
-                <p className="mt-3 text-center text-xs text-muted">
-                  We&apos;ll only use this to respond to your tattoo request.
+                <p className="mt-3 text-center text-xs leading-relaxed text-muted">
+                  {siteConfig.copy.smsConsent}{" "}
+                  <Link href="/privacy" className="underline">
+                    Privacy Policy
+                  </Link>
+                  .
                 </p>
-                <button
-                  type="button"
-                  className="mt-4 w-full text-sm text-muted"
-                  onClick={() => back("contact")}
-                >
-                  Back
-                </button>
               </StepPanel>
             )}
 
@@ -478,11 +466,8 @@ export function QuoteFlow() {
                   you at {submittedPhone ?? "your number"}.
                 </p>
                 <p className="mt-3 text-sm text-muted">
-                  Keep an eye on your texts. We&apos;ll follow up with pricing, availability, or
-                  any questions.
-                </p>
-                <p className="mt-4 text-xs text-muted">
-                  Need to send something else? Just reply to the text when it arrives.
+                  <span className="font-bold">Keep an eye on your texts.</span> We&apos;ll follow
+                  up with pricing, availability, or any questions.
                 </p>
                 <div className="mt-8 flex flex-col gap-2">
                   <Button type="button" variant="secondary" fullWidth onClick={closeQuote}>
