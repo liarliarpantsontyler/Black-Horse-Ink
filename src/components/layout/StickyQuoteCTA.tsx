@@ -3,39 +3,7 @@
 import { siteConfig } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
 import { Button } from "@/components/ui/Button";
-
-function ArrowRightIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 256 256"
-      width={18}
-      height={18}
-      aria-hidden
-      className="shrink-0 text-black"
-    >
-      <line
-        x1="40"
-        y1="128"
-        x2="216"
-        y2="128"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="20"
-      />
-      <polyline
-        points="144 56 216 128 144 200"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="20"
-      />
-    </svg>
-  );
-}
+import { ArrowRightIcon } from "@/components/ui/icons";
 
 export function StickyQuoteCTA() {
   const { isOpen, openQuote } = useQuote();
@@ -50,7 +18,7 @@ export function StickyQuoteCTA() {
         className="min-h-[3.25rem] gap-2.5 px-5 text-[18px] font-semibold leading-tight text-black hover:text-black/90"
       >
         {siteConfig.copy.stickyPrimaryCta}
-        <ArrowRightIcon />
+        <ArrowRightIcon className="shrink-0 text-black" />
       </Button>
       <p className="mt-2 text-center text-sm font-medium leading-snug text-response-highlight">
         {siteConfig.copy.responseTimeCopy}

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { LetterFadeDisplay } from "@/components/ui/LetterFadeDisplay";
@@ -11,6 +10,7 @@ import { getPortfolioByArtist } from "@/content/portfolio";
 import { getQuoteWithArtist, siteConfig } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
 import { Button } from "@/components/ui/Button";
+import { ArrowRightIcon, InstagramIcon } from "@/components/ui/icons";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 import { trackEvent } from "@/lib/analytics";
 
@@ -43,6 +43,13 @@ export function ArtistCard({ artist }: Props) {
   function closeLightbox() {
     setLightbox(null);
   }
+
+  const workPossessive =
+    artist.pronouns?.startsWith("she") === true
+      ? "her"
+      : artist.pronouns?.startsWith("he") === true
+        ? "his"
+        : "their";
 
   return (
     <>
@@ -103,25 +110,19 @@ export function ArtistCard({ artist }: Props) {
             <Button type="button" fullWidth onClick={() => openQuote(artist.id)}>
               {ctaLabel}
             </Button>
-            <div className="flex items-center justify-between gap-2 text-sm">
-              <Link
-                href={`/artists/${artist.slug}`}
-                className="text-muted underline-offset-4 hover:text-foreground hover:underline"
-              >
-                View {artist.id === "lucia" ? "her" : "his"} work
-              </Link>
-              <a
-                href={artist.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted hover:text-foreground"
-                onClick={() =>
-                  trackEvent("instagram_click", { artist_id: artist.id })
-                }
-              >
-                IG
-              </a>
-            </div>
+            <a
+              href={artist.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 flex-wrap items-center gap-1.5 text-sm text-muted underline-offset-4 hover:text-foreground hover:underline"
+              onClick={() =>
+                trackEvent("instagram_click", { artist_id: artist.id })
+              }
+            >
+              View {workPossessive} work on Instagram
+              <InstagramIcon size={16} className="shrink-0" />
+              <ArrowRightIcon size={16} className="shrink-0" />
+            </a>
           </div>
         </div>
       </article>

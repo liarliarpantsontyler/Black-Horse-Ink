@@ -70,8 +70,8 @@ body {
 }
 
 .hero-gallery-viewport {
-  touch-action: none;
-  overscroll-behavior: none;
+  touch-action: pan-y pinch-zoom;
+  overscroll-behavior-x: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

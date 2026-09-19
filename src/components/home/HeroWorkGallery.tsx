@@ -18,6 +18,10 @@ import { trackEvent } from "@/lib/analytics";
 
 const AUTO_SCROLL_PX_PER_SEC = 24;
 const TAP_MOVE_THRESHOLD_PX = 8;
+/** scrollX change per second (positive = auto-scroll direction) */
+const MOMENTUM_MIN_PX_PER_SEC = 18;
+const MOMENTUM_DECAY_PER_SEC = 4.2;
+const MAX_MOMENTUM_PX_PER_SEC = 3200;
 
 function hashTilt(id: string): number {
   let h = 0;
@@ -108,6 +112,8 @@ export function HeroWorkGallery() {
   const touchStartXRef = useRef(0);
   const touchStartYRef = useRef(0);
   const touchLastXRef = useRef<number | null>(null);
+  const velocityXRef = useRef(0);
+  const lastMoveTimeRef = useRef<number | null>(null);
 
   const applyTransform = useCallback(() => {
     const track = trackRef.current;
@@ -180,15 +186,38 @@ export function HeroWorkGallery() {
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    const resume = () => {
+    const stopMomentum = () => {
+      velocityXRef.current = 0;
+      lastMoveTimeRef.current = null;
+    };
+
+    const endDrag = () => {
       userInteractingRef.current = false;
       lastPointerXRef.current = null;
       touchAxisRef.current = null;
       touchLastXRef.current = null;
+      lastMoveTimeRef.current = null;
       setDragExtraRotate(0);
     };
 
+    const recordPanVelocity = (deltaX: number) => {
+      const now = performance.now();
+      const prev = lastMoveTimeRef.current;
+      lastMoveTimeRef.current = now;
+      if (prev === null) return;
+      const dt = (now - prev) / 1000;
+      if (dt <= 0 || dt > 0.12) return;
+      const instant = -deltaX / dt;
+      velocityXRef.current =
+        velocityXRef.current * 0.35 + instant * 0.65;
+      velocityXRef.current = Math.max(
+        -MAX_MOMENTUM_PX_PER_SEC,
+        Math.min(MAX_MOMENTUM_PX_PER_SEC, velocityXRef.current),
+      );
+    };
+
     const panHorizontal = (deltaX: number) => {
+      recordPanVelocity(deltaX);
       scrollXRef.current -= deltaX;
       setDragExtraRotate((r) => Math.max(-6, Math.min(6, r + deltaX * 0.08)));
       normalizeScroll();
@@ -197,7 +226,9 @@ export function HeroWorkGallery() {
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
       userInteractingRef.current = true;
+      stopMomentum();
       lastPointerXRef.current = e.clientX;
+      lastMoveTimeRef.current = performance.now();
       viewport.setPointerCapture(e.pointerId);
     };
 
@@ -214,16 +245,17 @@ export function HeroWorkGallery() {
       if (viewport.hasPointerCapture(e.pointerId)) {
         viewport.releasePointerCapture(e.pointerId);
       }
-      resume();
+      endDrag();
     };
 
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
-      userInteractingRef.current = true;
+      stopMomentum();
       touchAxisRef.current = null;
       touchStartXRef.current = e.touches[0].clientX;
       touchStartYRef.current = e.touches[0].clientY;
       touchLastXRef.current = e.touches[0].clientX;
+      lastMoveTimeRef.current = performance.now();
     };
 
     const onTouchMove = (e: TouchEvent) => {
@@ -235,32 +267,43 @@ export function HeroWorkGallery() {
       if (touchAxisRef.current === null) {
         if (Math.hypot(fromStartX, fromStartY) < 8) return;
         touchAxisRef.current =
-          Math.abs(fromStartX) >= Math.abs(fromStartY) ? "x" : "y";
+          Math.abs(fromStartX) > Math.abs(fromStartY) ? "x" : "y";
+        if (touchAxisRef.current === "y") {
+          touchLastXRef.current = null;
+          return;
+        }
+        userInteractingRef.current = true;
       }
+
+      if (touchAxisRef.current === "y") return;
 
       if (touchAxisRef.current === "x") {
         e.preventDefault();
-        const deltaX = touch.clientX - touchLastXRef.current;
+        const deltaX = touch.clientX - touchLastXRef.current!;
         panHorizontal(deltaX);
+        touchLastXRef.current = touch.clientX;
       }
-
-      touchLastXRef.current = touch.clientX;
     };
 
     const onTouchEnd = () => {
-      resume();
+      if (touchAxisRef.current !== "x") {
+        stopMomentum();
+      }
+      endDrag();
     };
 
     let wheelResumeTimer: ReturnType<typeof setTimeout>;
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       userInteractingRef.current = true;
+      stopMomentum();
       const delta =
         Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       scrollXRef.current += delta;
+      velocityXRef.current = delta * 8;
       normalizeScroll();
       clearTimeout(wheelResumeTimer);
-      wheelResumeTimer = setTimeout(resume, 400);
+      wheelResumeTimer = setTimeout(endDrag, 400);
     };
 
     viewport.addEventListener("pointerdown", onPointerDown);
@@ -292,11 +335,31 @@ export function HeroWorkGallery() {
       if (segmentWidthRef.current <= 0) {
         measureSegment();
       }
-      if (!reduceMotionRef.current && !userInteractingRef.current) {
-        const last = lastFrameTimeRef.current ?? now;
-        const dt = Math.min((now - last) / 1000, 0.1);
+      const last = lastFrameTimeRef.current ?? now;
+      const dt = Math.min((now - last) / 1000, 0.1);
+
+      const momentumActive =
+        Math.abs(velocityXRef.current) > MOMENTUM_MIN_PX_PER_SEC;
+
+      if (
+        momentumActive &&
+        !userInteractingRef.current &&
+        !reduceMotionRef.current
+      ) {
+        scrollXRef.current += velocityXRef.current * dt;
+        const decay = Math.exp(-MOMENTUM_DECAY_PER_SEC * dt);
+        velocityXRef.current *= decay;
+        if (Math.abs(velocityXRef.current) <= MOMENTUM_MIN_PX_PER_SEC) {
+          velocityXRef.current = 0;
+        }
+      } else if (
+        !reduceMotionRef.current &&
+        !userInteractingRef.current &&
+        !momentumActive
+      ) {
         scrollXRef.current += AUTO_SCROLL_PX_PER_SEC * dt;
       }
+
       normalizeScroll();
       lastFrameTimeRef.current = now;
       rafRef.current = requestAnimationFrame(tick);

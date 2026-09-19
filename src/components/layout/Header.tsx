@@ -91,10 +91,10 @@ export function Header() {
             <Image
               src={LOGO_V1}
               alt=""
-              width={560}
-              height={160}
+              width={1024}
+              height={273}
               priority
-              className="h-[4.25rem] w-auto object-contain md:h-10"
+              className="h-[4.25rem] w-auto max-w-[min(20rem,calc(100vw-7.5rem))] object-contain md:h-10 md:max-w-none"
             />
           )}
         </Link>
