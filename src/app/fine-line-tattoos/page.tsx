@@ -5,7 +5,7 @@ import { PortfolioGrid } from "@/components/portfolio/PortfolioGrid";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { FAQAccordion } from "@/components/home/FAQAccordion";
 import { LocationBlock } from "@/components/home/LocationBlock";
-import { getArtistById } from "@/content/site.config";
+import { getArtistById, siteConfig } from "@/content/site.config";
 import { buildMetadata } from "@/lib/metadata";
 
 export const metadata = buildMetadata({
@@ -23,7 +23,7 @@ export default function FineLinePage() {
     <SiteShell>
       <Hero
         title="Fine-line & minimalist tattoos."
-        subtitle={`Delicate, precise work with ${lucia.name} in [CITY, STATE].`}
+        subtitle={`Delicate, precise work with ${lucia.name} in ${siteConfig.studio.cityState}.`}
         presetArtistId="lucia"
       />
       <section className="mx-auto max-w-lg px-4 pb-8 md:px-6">

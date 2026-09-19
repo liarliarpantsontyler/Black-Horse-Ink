@@ -4,8 +4,8 @@ const raw: SiteConfig = {
   studio: {
     name: "Black Horse Ink",
     slug: "black-horse-ink",
-    tagline: "Fine-line, small & custom tattoos in [CITY, STATE].",
-    cityState: "[CITY, STATE]",
+    tagline: "Fine-line, small & custom tattoos in Justin, Texas.",
+    cityState: "Justin, Texas",
     address: "[STUDIO ADDRESS]",
     phoneDisplay: "[PHONE]",
     hours: ["[HOURS — e.g. Tue–Sat 11am–7pm]"],
@@ -130,7 +130,7 @@ const raw: SiteConfig = {
     {
       id: "location",
       question: "Where are you located?",
-      answer: "We're at [STUDIO ADDRESS] in [CITY, STATE]. Tap Get Directions on this page for maps.",
+      answer: "We're at [STUDIO ADDRESS] in Justin, Texas. Tap Get Directions on this page for maps.",
     },
     {
       id: "prep",
