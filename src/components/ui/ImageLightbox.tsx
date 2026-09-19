@@ -11,6 +11,8 @@ type Props = {
   /** Shows hint + primary CTA pill (portfolio / work context) */
   onQuote?: () => void;
   quoteHint?: string;
+  /** Shown in header bar, e.g. "Lucia" → "Tattoo by Lucia" */
+  artistName?: string;
 };
 
 export function ImageLightbox({
@@ -19,6 +21,7 @@ export function ImageLightbox({
   onClose,
   onQuote,
   quoteHint = siteConfig.copy.quoteLikeThisHint,
+  artistName,
 }: Props) {
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -47,10 +50,22 @@ export function ImageLightbox({
         onClick={onClose}
       />
       <div className="relative flex max-h-[88dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-border/60 bg-surface shadow-2xl md:max-h-[85vh] md:rounded-3xl">
-        <div className="flex items-center justify-end border-b border-border/40 px-4 py-2">
+        <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-2">
+          {artistName ? (
+            <p className="flex min-w-0 items-baseline gap-1 truncate">
+              <span className="text-[18px] font-medium leading-snug text-accent">
+                Tattoo by:
+              </span>
+              <span className="font-display truncate text-2xl text-foreground">
+                {artistName}
+              </span>
+            </p>
+          ) : (
+            <span className="min-h-10" aria-hidden />
+          )}
           <button
             type="button"
-            className="min-h-10 px-3 text-sm text-muted hover:text-foreground"
+            className="min-h-10 shrink-0 px-3 text-[18px] text-muted hover:text-foreground"
             onClick={onClose}
           >
             Close
@@ -72,10 +87,10 @@ export function ImageLightbox({
 
           {onQuote ? (
             <div className="mt-5 text-center">
-              <p className="text-sm text-muted">{quoteHint}</p>
+              <p className="text-base leading-snug text-muted">{quoteHint}</p>
               <button
                 type="button"
-                className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent-strong px-8 text-sm font-semibold tracking-wide text-background transition-colors hover:bg-accent-strong/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong/60 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent-strong px-8 text-[18px] font-semibold tracking-wide text-background transition-colors hover:bg-accent-strong/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong/60 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                 onClick={onQuote}
               >
                 {siteConfig.copy.primaryCta}

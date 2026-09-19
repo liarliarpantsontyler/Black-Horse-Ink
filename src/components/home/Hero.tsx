@@ -17,7 +17,6 @@ export function Hero({
   subtitle,
 }: HeroProps) {
   const fadeTagline = useFadeInView(0.12);
-  const fadeResponse = useFadeInView(0.28);
   const sub =
     subtitle ??
     siteConfig.studio.tagline.replace("[CITY, STATE]", siteConfig.studio.cityState);
@@ -36,12 +35,6 @@ export function Hero({
             className="max-w-md text-base leading-snug text-muted md:text-lg"
           >
             {sub}
-          </motion.p>
-          <motion.p
-            {...fadeResponse}
-            className="text-sm font-medium leading-snug text-response-highlight"
-          >
-            {siteConfig.copy.responseTimeCopy}
           </motion.p>
         </div>
         <HeroWorkGallery />

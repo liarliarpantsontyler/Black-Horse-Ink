@@ -52,7 +52,10 @@ export function StickyQuoteCTA() {
         {siteConfig.copy.stickyPrimaryCta}
         <ArrowRightIcon />
       </Button>
-      <p className="mt-2 text-center text-sm text-muted">{siteConfig.copy.ctaSubtext}</p>
+      <p className="mt-2 text-center text-sm font-medium leading-snug text-response-highlight">
+        {siteConfig.copy.responseTimeCopy}
+      </p>
+      <p className="mt-1 text-center text-sm text-muted">{siteConfig.copy.stickySubtext}</p>
     </div>
   );
 }

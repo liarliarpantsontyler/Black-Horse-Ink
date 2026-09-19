@@ -93,7 +93,7 @@ export function PortfolioGrid({ artistId, limit }: Props) {
           src={active.image}
           alt={active.alt}
           onClose={() => setActive(null)}
-          quoteHint={`Tattoo by ${getArtistById(active.artistId)?.name ?? "Artist"}. ${siteConfig.copy.quoteLikeThisHint}`}
+          artistName={getArtistById(active.artistId)?.name ?? "Artist"}
           onQuote={() => {
             setActive(null);
             openQuote(active.artistId);

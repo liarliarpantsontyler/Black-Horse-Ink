@@ -74,7 +74,7 @@ export function ArtistCard({ artist }: Props) {
         </button>
         <div className="flex flex-1 flex-col gap-3 p-4 md:p-5">
           <div>
-            <h3 className="font-display text-xl md:text-2xl">{artist.name}</h3>
+            <h3 className="font-display text-2xl">{artist.name}</h3>
             <p className="mt-0.5 text-sm text-accent">{headline}</p>
             <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
               {artist.bio}
@@ -131,6 +131,7 @@ export function ArtistCard({ artist }: Props) {
           src={lightbox.type === "portrait" ? lightbox.src : lightbox.item.image}
           alt={lightbox.type === "portrait" ? lightbox.alt : lightbox.item.alt}
           onClose={closeLightbox}
+          artistName={lightbox.type === "work" ? artist.name : undefined}
           onQuote={
             lightbox.type === "work"
               ? () => {
@@ -161,7 +162,9 @@ export function ArtistSelectorSection() {
           <span className="font-medium text-response-highlight">
             {siteConfig.copy.responseTimeCopy}
           </span>
-          . {siteConfig.copy.primaryCta} by text — no phone call needed.
+          .
+          <br />
+          {siteConfig.copy.primaryCta} by text — no phone call needed.
         </motion.p>
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           {siteConfig.artists.map((artist) => (
