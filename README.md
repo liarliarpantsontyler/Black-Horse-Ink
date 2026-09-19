@@ -14,6 +14,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Docs
 
+- [ROADMAP.md](./ROADMAP.md) — what's next (Quo, Resend, content, analytics)
 - [RUNBOOK.md](./RUNBOOK.md) — deploy, Supabase, Quo, GA4/Ads handoff
 - [scripts/README.md](./scripts/README.md) — Instagram portfolio sync
 
