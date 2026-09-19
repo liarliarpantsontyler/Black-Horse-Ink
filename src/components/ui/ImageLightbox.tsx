@@ -49,14 +49,14 @@ export function ImageLightbox({
         aria-label="Close preview"
         onClick={onClose}
       />
-      <div className="relative flex max-h-[88dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-border/60 bg-surface shadow-2xl md:max-h-[85vh] md:rounded-3xl">
-        <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-2">
+      <div className="relative flex max-h-[88dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-black/10 bg-white text-black shadow-2xl md:max-h-[85vh] md:rounded-3xl">
+        <div className="flex items-center justify-between gap-3 border-b border-black/10 px-4 py-2">
           {artistName ? (
             <p className="flex min-w-0 items-baseline gap-1 truncate">
-              <span className="text-[18px] font-medium leading-snug text-accent">
+              <span className="text-[18px] font-medium leading-snug text-accent-strong">
                 Tattoo by:
               </span>
-              <span className="font-display truncate text-2xl text-foreground">
+              <span className="font-display truncate text-2xl text-black">
                 {artistName}
               </span>
             </p>
@@ -65,32 +65,32 @@ export function ImageLightbox({
           )}
           <button
             type="button"
-            className="min-h-10 shrink-0 px-3 text-[18px] text-muted hover:text-foreground"
+            className="min-h-10 shrink-0 px-3 text-[18px] text-black/70 hover:text-black"
             onClick={onClose}
           >
             Close
           </button>
         </div>
 
-        <div className="overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3">
-          <div className="relative w-full overflow-hidden rounded-xl bg-background/40">
+        <div className="overflow-y-auto pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+          <div className="relative w-full overflow-hidden bg-neutral-100">
             <Image
               src={src}
               alt={alt}
               width={1200}
               height={1500}
-              className="h-auto max-h-[min(52dvh,520px)] w-full object-contain"
-              sizes="(max-width:768px) 100vw, 512px"
+              className="block h-auto w-full max-w-none"
+              sizes="100vw"
               priority
             />
           </div>
 
           {onQuote ? (
-            <div className="mt-5 text-center">
-              <p className="text-base leading-snug text-muted">{quoteHint}</p>
+            <div className="mt-5 px-4 text-center">
+              <p className="text-base leading-snug text-black/75">{quoteHint}</p>
               <button
                 type="button"
-                className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent-strong px-8 text-[18px] font-semibold tracking-wide text-background transition-colors hover:bg-accent-strong/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong/60 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent-strong px-8 text-[18px] font-semibold tracking-wide text-black transition-colors hover:bg-accent-strong/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 onClick={onQuote}
               >
                 {siteConfig.copy.primaryCta}

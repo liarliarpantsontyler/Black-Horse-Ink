@@ -67,7 +67,7 @@ const raw: SiteConfig = {
       name: "Marcos",
       pronouns: "he/him",
       portrait: "/images/artists/marcos-portrait.jpg",
-      bio: "Marcos focuses on larger custom projects and multi-session work for clients ready to go bigger.",
+      bio: "Marcos focuses on larger custom projects and multi-session pieces.",
       specialties: ["Large tattoos", "Custom projects", "Multi-session pieces"],
       instagram: "https://www.instagram.com/cacoink/",
       instagramHandle: "cacoink",

@@ -249,8 +249,11 @@ export function QuoteFlow() {
             {step === "idea" && (
               <StepPanel key="idea">
                 <h2 className="font-display text-2xl">What are you thinking about getting?</h2>
+                <p className="mt-3 text-sm text-muted">
+                  You can share photos on the next screen.
+                </p>
                 <textarea
-                  className="mt-4 min-h-36 w-full rounded-2xl border border-border bg-surface p-4 text-base outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="mt-3 min-h-36 w-full rounded-2xl border border-border bg-surface p-4 text-base outline-none focus-visible:ring-2 focus-visible:ring-accent"
                   placeholder="Snake wrapping around my forearm, mostly black with a few fine details..."
                   value={draft.idea ?? ""}
                   onChange={(e) => updateDraft({ idea: e.target.value })}

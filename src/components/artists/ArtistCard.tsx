@@ -30,10 +30,10 @@ export function ArtistCard({ artist }: Props) {
 
   const headline =
     artist.id === "lucia"
-      ? "Fine-line + small tattoos"
+      ? "Fine-line · Small to Medium Tattoos"
       : artist.id === "juan"
-        ? "Small + medium custom tattoos"
-        : "Large custom projects";
+        ? "Small to Medium Custom Tattoos"
+        : "Realism + Traditional + Large Custom Projects";
 
   const ctaLabel =
     artist.inquiryType === "large_projects"
