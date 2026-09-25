@@ -71,12 +71,18 @@ export function QuoteFlow() {
       : artistId && artistId.length > 0
         ? artistId
         : undefined;
-  const responseTimeLine = selectedArtistId
+  const selectedArtist = selectedArtistId
+    ? getArtistById(selectedArtistId)
+    : undefined;
+  const responseTimeLine = selectedArtist
     ? siteConfig.copy.artistResponseTimeTemplate.replace(
         "{{artistName}}",
-        getArtistById(selectedArtistId)?.name ?? siteConfig.studio.name,
+        selectedArtist.name,
       )
     : siteConfig.copy.responseTimeCopy;
+  const submitCtaLabel = selectedArtist
+    ? `Text ${selectedArtist.name}`
+    : siteConfig.copy.submitQuoteCta;
 
   function next(current: Step) {
     const idx = stepOrder.indexOf(current);
@@ -446,7 +452,7 @@ export function QuoteFlow() {
                   disabled={submitting}
                   onClick={submit}
                 >
-                  {submitting ? "Sending…" : siteConfig.copy.submitQuoteCta}
+                  {submitting ? "Sending…" : submitCtaLabel}
                 </Button>
                 <p className="mt-3 text-center text-xs leading-relaxed text-muted">
                   {siteConfig.copy.smsConsent}{" "}

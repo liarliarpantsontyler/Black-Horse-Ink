@@ -10,7 +10,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open the URL printed in the terminal (usually [http://localhost:3000](http://localhost:3000)). If port 3000 is already in use, Next.js picks the next free port (e.g. **3001**) — that URL is the one for this project.
+Open **[http://localhost:3001](http://localhost:3001)** (this project always uses port 3001 so it does not clash with other Next apps on 3000).
 
 ## Docs
 

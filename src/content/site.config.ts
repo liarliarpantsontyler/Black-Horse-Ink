@@ -20,7 +20,7 @@ const raw: SiteConfig = {
     stickyPrimaryCta: "Get a Quote or Book a Session",
     stickySubtext: "Tell us your idea, we'll text you back within minutes.",
     startQuoteCta: "Start a Quote",
-    submitQuoteCta: "Send My Tattoo",
+    submitQuoteCta: "Text us",
     largeProjectCta: "Ask About a Large Project",
     quoteWithArtistTemplate: "Get a Quote with {{name}}",
     quoteLikeThisHint: "Want Something Like This?",
