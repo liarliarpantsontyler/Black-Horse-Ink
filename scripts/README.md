@@ -73,3 +73,10 @@ Optional: `GOOGLE_PLACE_ID=ChIJ...` overrides the ID in `site.config.ts`.
 4. Find the studio **Place ID** from the Google Maps listing (Share → embed or Place ID tools).
 
 Reviews shown on the site are limited to what Google returns (typically up to five recent reviews with text).
+
+## Manually supplied portfolio photos
+
+`src/content/portfolio.manual.json` contains artist-assigned uploads in
+`public/images/portfolio/manual/`. The site merges these with Instagram entries;
+matching IDs replace existing photos, avoiding duplicates. Instagram sync does
+not overwrite the manual list.

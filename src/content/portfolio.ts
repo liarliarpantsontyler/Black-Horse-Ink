@@ -1,10 +1,18 @@
 import { z } from "zod";
 import { portfolioItemSchema, type PortfolioItem } from "./schemas";
 import generated from "./portfolio.generated.json";
+import manual from "./portfolio.manual.json";
 
 const portfolioSchema = z.array(portfolioItemSchema);
 
-export const portfolioItems: PortfolioItem[] = portfolioSchema.parse(generated);
+// Manual uploads survive Instagram syncs and replace matching existing photos.
+const manualItems = portfolioSchema.parse(manual);
+const manualById = new Map(manualItems.map((item) => [item.id, item]));
+const generatedIds = new Set(generated.map((item) => item.id));
+export const portfolioItems: PortfolioItem[] = portfolioSchema.parse([
+  ...generated.map((item) => manualById.get(item.id) ?? item),
+  ...manualItems.filter((item) => !generatedIds.has(item.id)),
+]);
 
 // Photos excluded from homepage galleries by the studio; retain artist portfolios.
 const HOMEPAGE_EXCLUDED_IDS = new Set([
