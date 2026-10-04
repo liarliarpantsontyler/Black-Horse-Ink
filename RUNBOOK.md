@@ -64,3 +64,23 @@ Copy from `.env.example`:
 ## 7. Legal
 
 Review `/privacy` placeholder copy with owner before running paid traffic.
+
+## Current native-text quote flow
+
+Customers complete the half-sheet and upload references, then tap **Prepare my text**.
+`/api/quote-text` saves details and photos in Supabase with SMS sync marked `skipped`;
+it does not invoke Quo, send automatic confirmations, or notify staff. The final
+**Text [artist]** link opens Messages to (940) 910-1094 with details and an unlisted
+`/references/[token]` photo link. The customer must tap Send. Opening Messages is
+tracked as `quote_text_opened`, not proof of message delivery.
+
+Set valid Supabase admin credentials, run the existing migration, and confirm the
+private `lead-references` bucket exists. Set `NEXT_PUBLIC_SITE_URL` to the deployed
+HTTPS site so the shop can open photo links. Without storage, text-only quotes work,
+but photo quotes return an explicit error. Link holders can view only reference
+photos; the gallery does not expose contact details. Signed image URLs expire after
+one hour; reopening the gallery generates fresh URLs.
+
+Smoke-test on an iPhone and Android: prepare a quote with photos, open the prepared
+text, verify recipient/artist/details/link, tap Send manually, then open the link
+on the shop iPhone. Also check desktop copy/paste and upload failure behavior.

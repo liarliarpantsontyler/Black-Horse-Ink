@@ -49,8 +49,9 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-medium text-foreground">Uploaded images</h2>
             <p>
-              Reference images you upload are stored securely and are not published on the
-              public website. Access is limited to studio staff handling your inquiry.
+              Reference images are stored in private storage. Your prepared text includes an
+              unlisted link to view them. Anyone with that link can view the photos, so
+              share it only with the studio. Your contact information is not shown on the photo page.
             </p>
           </section>
         </div>

@@ -1,11 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { siteConfig, getArtistById } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
-import { getAttribution } from "@/lib/attribution";
+import { buildQuoteText, shopSmsHref } from "@/lib/shop-text";
 import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/Button";
 import {
@@ -28,15 +28,16 @@ type Step =
   | "success";
 
 export function QuoteFlow() {
+  const { isOpen } = useQuote();
+  return isOpen ? <QuoteFlowContent /> : null;
+}
+
+function QuoteFlowContent() {
   const {
-    isOpen,
     closeQuote,
     draft,
     updateDraft,
     presetArtistId,
-    clearDraft,
-    submittedPhone,
-    setSubmittedPhone,
   } = useQuote();
   const reduceMotion = useReducedMotion();
   const [step, setStep] = useState<Step>("intro");
@@ -44,17 +45,10 @@ export function QuoteFlow() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [website, setWebsite] = useState("");
-  const [successArtistName, setSuccessArtistName] = useState<string | null>(null);
+  const [preparedMessage, setPreparedMessage] = useState("");
+  const [copyStatus, setCopyStatus] = useState("");
 
   const artistId = draft.artistId ?? presetArtistId;
-
-  useEffect(() => {
-    if (!isOpen) {
-      setStep("intro");
-      setError(null);
-      setFiles([]);
-    }
-  }, [isOpen]);
 
   const stepOrder: Step[] = useMemo(() => {
     const base: Step[] = ["intro"];
@@ -111,32 +105,25 @@ export function QuoteFlow() {
       form.set("placementNotes", draft.placementNotes ?? "");
       form.set("timing", draft.timing ?? "");
       form.set("website", website);
-      form.set("attribution", JSON.stringify(getAttribution()));
       files.forEach((f) => form.append("references", f));
 
-      const res = await fetch("/api/leads", { method: "POST", body: form });
-      const data = (await res.json()) as { ok?: boolean; error?: string; phoneMasked?: string };
+      const res = await fetch("/api/quote-text", { method: "POST", body: form });
+      const data = (await res.json()) as { ok?: boolean; error?: string; referencesUrl?: string };
       if (!res.ok || !data.ok) {
         throw new Error(data.error ?? "Something went wrong. Try again.");
       }
-      trackEvent("quote_completed", {
-        artist_id: draft.artistId ?? artistId ?? "unsure",
-      });
-      const resolvedArtist =
-        getArtistById(draft.artistId ?? artistId ?? "")?.name ??
-        siteConfig.studio.name;
-      setSuccessArtistName(resolvedArtist);
-      setSubmittedPhone(draft.phone?.trim() || undefined);
-      clearDraft();
+      const message = buildQuoteText({ ...draft, artistId: selectedArtistId }, data.referencesUrl);
+      setPreparedMessage(message);
       setStep("success");
+      // A fresh tap on the final link preserves the native-app handoff on mobile.
+      // Preparing uploads can take too long to retain the original user gesture.
+      trackEvent("quote_prepared", { artist_id: selectedArtistId ?? "unsure" });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Submit failed");
     } finally {
       setSubmitting(false);
     }
   }
-
-  if (!isOpen) return null;
 
   const transition = reduceMotion ? { duration: 0 } : { duration: 0.25 };
 
@@ -194,7 +181,7 @@ export function QuoteFlow() {
                   Let&apos;s see what you&apos;re thinking 👋
                 </h2>
                 <p className="mt-3 text-muted">
-                  A few quick questions and we&apos;ll text you back.
+                  A few quick questions, then send your idea to our shop in Messages.
                 </p>
                 <Button
                   type="button"
@@ -346,7 +333,7 @@ export function QuoteFlow() {
               <StepPanel key="references">
                 <h2 className="font-display text-2xl">Got inspiration?</h2>
                 <p className="mt-2 text-sm text-muted">
-                  Upload anything that helps us understand the idea. Screenshots are totally fine.
+                  Upload your inspiration. We’ll include an unlisted photo link in your text to the shop.
                 </p>
                 <div className="mt-4">
                   <UploadReferences files={files} onChange={setFiles} />
@@ -397,7 +384,7 @@ export function QuoteFlow() {
 
             {step === "contact" && (
               <StepPanel key="contact">
-                <h2 className="font-display text-2xl">Where should we text you?</h2>
+                <h2 className="font-display text-2xl">Ready to prepare your text?</h2>
                 <div className="mt-4 space-y-3">
                   <label className="block text-sm">
                     First name
@@ -452,10 +439,10 @@ export function QuoteFlow() {
                   disabled={submitting}
                   onClick={submit}
                 >
-                  {submitting ? "Sending…" : submitCtaLabel}
+                  {submitting ? "Preparing…" : "Prepare my text"}
                 </Button>
                 <p className="mt-3 text-center text-xs leading-relaxed text-muted">
-                  {siteConfig.copy.smsConsent}{" "}
+                  Your details and photos will be saved to prepare your message. Next, tap {submitCtaLabel} to open your texting app, then tap Send there.{" "}
                   <Link href="/privacy" className="underline">
                     Privacy Policy
                   </Link>
@@ -466,15 +453,36 @@ export function QuoteFlow() {
 
             {step === "success" && (
               <StepPanel key="success">
-                <h2 className="font-display text-3xl">We got it 🤘</h2>
+                <h2 className="font-display text-3xl">Your text is ready 🤘</h2>
                 <p className="mt-4 text-muted">
-                  {successArtistName ?? siteConfig.studio.name} has your idea. We&apos;ll text
-                  you at {submittedPhone ?? "your number"}.
+                  Send your idea to {siteConfig.studio.phoneDisplay}. Your chosen artist,
+                  answers, and any uploaded photo link are included. Tap Send in your texting app.
                 </p>
-                <p className="mt-3 text-sm text-muted">
-                  <span className="font-bold">Keep an eye on your texts.</span> We&apos;ll follow
-                  up with pricing, availability, or any questions.
+                <a
+                  href={shopSmsHref(preparedMessage, typeof navigator === "undefined" ? "" : navigator.userAgent)}
+                  className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-background"
+                  onClick={() => trackEvent("quote_text_opened", { artist_id: selectedArtistId ?? "unsure" })}
+                >
+                  {submitCtaLabel}
+                </a>
+                <p className="mt-4 text-sm text-muted">
+                  If Messages doesn’t open or the message is missing, copy it below and text
+                  {" "}{siteConfig.studio.phoneDisplay} from your phone. Photos are shared as a link, not attachments.
                 </p>
+                <textarea aria-label="Prepared text message" readOnly value={preparedMessage}
+                  className="mt-3 min-h-48 w-full rounded-xl border border-border bg-surface p-4 text-sm" />
+                <Button type="button" variant="secondary" fullWidth className="mt-3" onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(preparedMessage);
+                    setCopyStatus("Copied. Paste into a text to the shop.");
+                  } catch {
+                    setCopyStatus("Select and copy the message above.");
+                  }
+                }}>Copy message</Button>
+                <p role="status" className="mt-2 text-sm text-muted">{copyStatus}</p>
+                <button type="button" className="mt-3 text-sm underline" onClick={() => setStep("contact")}>
+                  Edit my details
+                </button>
                 <div className="mt-8 flex flex-col gap-2">
                   <Button type="button" variant="secondary" fullWidth onClick={closeQuote}>
                     View more work
