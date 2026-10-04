@@ -18,7 +18,7 @@ export function buildQuoteText(draft: QuoteDraft, referencesUrl?: string) {
     draft.phone?.trim() ? `Contact: ${draft.phone.trim()}` : null,
     draft.email?.trim() ? `Email: ${draft.email.trim()}` : null,
     referencesUrl ? `Reference photos: ${referencesUrl}` : null,
-  ].filter(Boolean).join("\n");
+  ].filter(Boolean).join("\n\n");
 }
 
 export function shopSmsHref(message: string, userAgent: string) {
