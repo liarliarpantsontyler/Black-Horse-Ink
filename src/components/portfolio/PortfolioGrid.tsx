@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { portfolioItems } from "@/content/portfolio";
+import { portfolioItems, homepagePortfolioItems } from "@/content/portfolio";
 import type { PortfolioItem } from "@/content/schemas";
-import { getArtistById, siteConfig } from "@/content/site.config";
+import { getArtistById } from "@/content/site.config";
 import type { portfolioFilterSchema } from "@/content/schemas";
 import { z } from "zod";
 import { useQuote } from "@/context/QuoteContext";
@@ -23,23 +23,25 @@ const FILTERS: { id: Filter; label: string }[] = [
 type Props = {
   artistId?: string;
   limit?: number;
+  homepage?: boolean;
 };
 
-export function PortfolioGrid({ artistId, limit }: Props) {
+export function PortfolioGrid({ artistId, limit, homepage = false }: Props) {
   const [filter, setFilter] = useState<Filter>("all");
   const [active, setActive] = useState<PortfolioItem | null>(null);
   const { openQuote } = useQuote();
 
   const items = useMemo(() => {
+    const source = homepage ? homepagePortfolioItems : portfolioItems;
     let list = artistId
-      ? portfolioItems.filter((p) => p.artistId === artistId)
-      : portfolioItems;
+      ? source.filter((p) => p.artistId === artistId)
+      : source;
     if (filter !== "all") {
       list = list.filter((p) => p.tags.includes(filter));
     }
     if (limit) list = list.slice(0, limit);
     return list;
-  }, [artistId, filter, limit]);
+  }, [artistId, filter, limit, homepage]);
 
   return (
     <section id="work" className="scroll-mt-20 py-16 md:py-24">

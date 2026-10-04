@@ -12,7 +12,7 @@ export default function HomePage() {
     <SiteShell>
       <Hero />
       <ArtistSelectorSection />
-      <PortfolioGrid />
+      <PortfolioGrid homepage />
       <HowItWorks />
       <ReviewsSection />
       <FAQAccordion />

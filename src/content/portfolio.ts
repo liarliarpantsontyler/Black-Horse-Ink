@@ -6,6 +6,23 @@ const portfolioSchema = z.array(portfolioItemSchema);
 
 export const portfolioItems: PortfolioItem[] = portfolioSchema.parse(generated);
 
+// Photos excluded from homepage galleries by the studio; retain artist portfolios.
+const HOMEPAGE_EXCLUDED_IDS = new Set([
+  "lucia-ig-DYf_hvySsYL",
+  "juan-ig-DMwGEuOgweC",
+  "juan-ig-DVRas7sGXVt",
+  "juan-ig-DTTT5gMgNpz",
+  "juan-ig-DSI7v0ygJn1",
+  "marcos-ig-DdY6wQTjW0h",
+  "marcos-ig-Dcd7tkCkSqn",
+  "marcos-ig-Dbyd1S8ET7U",
+  "marcos-ig-DboYM_gDdOF",
+]);
+
+export const homepagePortfolioItems = portfolioItems.filter(
+  (item) => !HOMEPAGE_EXCLUDED_IDS.has(item.id),
+);
+
 export function getPortfolioByArtist(artistId: string, limit?: number) {
   const items = portfolioItems.filter((p) => p.artistId === artistId);
   return limit ? items.slice(0, limit) : items;
@@ -24,7 +41,7 @@ export function buildHeroGallerySequence(cycles = 5): PortfolioItem[] {
   const items: PortfolioItem[] = [];
   for (let c = 0; c < cycles; c++) {
     for (const artistId of HERO_GALLERY_ARTIST_ORDER) {
-      const pool = getPortfolioByArtist(artistId);
+      const pool = homepagePortfolioItems.filter((item) => item.artistId === artistId);
       if (pool.length === 0) continue;
       items.push(pool[c % pool.length]);
     }

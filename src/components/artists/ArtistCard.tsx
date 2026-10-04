@@ -6,7 +6,7 @@ import { useState } from "react";
 import { LetterFadeDisplay } from "@/components/ui/LetterFadeDisplay";
 import { useFadeInView } from "@/components/ui/useFadeInView";
 import type { Artist, PortfolioItem } from "@/content/schemas";
-import { getPortfolioByArtist } from "@/content/portfolio";
+import { getPortfolioByArtist, homepagePortfolioItems } from "@/content/portfolio";
 import { getQuoteWithArtist, siteConfig } from "@/content/site.config";
 import { useQuote } from "@/context/QuoteContext";
 import { Button } from "@/components/ui/Button";
@@ -16,13 +16,16 @@ import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   artist: Artist;
+  homepage?: boolean;
 };
 
 type LightboxState = { item: PortfolioItem };
 
-export function ArtistCard({ artist }: Props) {
+export function ArtistCard({ artist, homepage = false }: Props) {
   const { openQuote } = useQuote();
-  const thumbs = getPortfolioByArtist(artist.id, 4);
+  const thumbs = homepage
+    ? homepagePortfolioItems.filter((item) => item.artistId === artist.id).slice(0, 4)
+    : getPortfolioByArtist(artist.id, 4);
   const deemph = artist.visualWeight === "de-emphasized";
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
 
@@ -152,7 +155,7 @@ export function ArtistSelectorSection() {
         </motion.p>
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           {siteConfig.artists.map((artist) => (
-            <ArtistCard key={artist.id} artist={artist} />
+            <ArtistCard key={artist.id} artist={artist} homepage />
           ))}
         </div>
       </div>
