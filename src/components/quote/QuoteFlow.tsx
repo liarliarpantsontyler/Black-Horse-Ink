@@ -24,8 +24,7 @@ type Step =
   | "placement"
   | "references"
   | "timing"
-  | "contact"
-  | "success";
+  | "contact";
 
 export function QuoteFlow() {
   const { isOpen } = useQuote();
@@ -47,6 +46,7 @@ function QuoteFlowContent() {
   const [website, setWebsite] = useState("");
   const [preparedMessage, setPreparedMessage] = useState("");
   const [copyStatus, setCopyStatus] = useState("");
+  const [preparedInputs, setPreparedInputs] = useState("");
 
   const artistId = draft.artistId ?? presetArtistId;
 
@@ -90,8 +90,18 @@ function QuoteFlowContent() {
     if (p) setStep(p);
   }
 
+  function openMessages(message: string) {
+    trackEvent("quote_text_opened", { artist_id: selectedArtistId ?? "unsure" });
+    window.location.href = shopSmsHref(message, navigator.userAgent);
+  }
+
   async function submit() {
     setError(null);
+    const inputs = JSON.stringify({ draft, selectedArtistId, files: files.map((file) => [file.name, file.size, file.lastModified]) });
+    if (preparedMessage && preparedInputs === inputs) {
+      openMessages(preparedMessage);
+      return;
+    }
     setSubmitting(true);
     try {
       const form = new FormData();
@@ -114,10 +124,10 @@ function QuoteFlowContent() {
       }
       const message = buildQuoteText({ ...draft, artistId: selectedArtistId }, data.referencesUrl);
       setPreparedMessage(message);
-      setStep("success");
-      // A fresh tap on the final link preserves the native-app handoff on mobile.
-      // Preparing uploads can take too long to retain the original user gesture.
+      setPreparedInputs(inputs);
+      setCopyStatus("");
       trackEvent("quote_prepared", { artist_id: selectedArtistId ?? "unsure" });
+      openMessages(message);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Submit failed");
     } finally {
@@ -146,7 +156,7 @@ function QuoteFlowContent() {
         aria-labelledby="quote-title"
       >
         <div className="space-y-2 border-b border-black/10 px-5 py-4">
-          {step !== "success" && (
+          {(
             <p className="text-[16px] font-medium leading-snug text-response-highlight">
               {responseTimeLine}
             </p>
@@ -384,7 +394,7 @@ function QuoteFlowContent() {
 
             {step === "contact" && (
               <StepPanel key="contact">
-                <h2 className="font-display text-2xl">Ready to prepare your text?</h2>
+                <h2 className="font-display text-2xl">Where should we text you?</h2>
                 <div className="mt-4 space-y-3">
                   <label className="block text-sm">
                     First name
@@ -439,10 +449,27 @@ function QuoteFlowContent() {
                   disabled={submitting}
                   onClick={submit}
                 >
-                  {submitting ? "Preparing…" : "Prepare my text"}
+                  {submitting ? "Opening texts…" : submitCtaLabel}
                 </Button>
+                {preparedMessage && (
+                  <details className="mt-4 text-sm text-muted">
+                    <summary className="cursor-pointer">Texts didn’t open?</summary>
+                    <p className="mt-3">Tap {submitCtaLabel} again, or copy your message and text {siteConfig.studio.phoneDisplay}.</p>
+                    <textarea aria-label="Prepared text message" readOnly value={preparedMessage}
+                      className="mt-3 min-h-36 w-full rounded-xl border border-border bg-surface p-3 text-sm" />
+                    <Button type="button" variant="secondary" fullWidth className="mt-3" onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(preparedMessage);
+                        setCopyStatus("Copied. Paste into a text to the shop.");
+                      } catch {
+                        setCopyStatus("Select and copy the message above.");
+                      }
+                    }}>Copy message</Button>
+                    <p role="status" className="mt-2">{copyStatus}</p>
+                  </details>
+                )}
                 <p className="mt-3 text-center text-xs leading-relaxed text-muted">
-                  Your details and photos will be saved to prepare your message. Next, tap {submitCtaLabel} to open your texting app, then tap Send there.{" "}
+                  Tap {submitCtaLabel} to save your photos and open your texting app with your idea and photo link. Then tap Send there.{" "}
                   <Link href="/privacy" className="underline">
                     Privacy Policy
                   </Link>
@@ -451,67 +478,6 @@ function QuoteFlowContent() {
               </StepPanel>
             )}
 
-            {step === "success" && (
-              <StepPanel key="success">
-                <h2 className="font-display text-3xl">Your text is ready 🤘</h2>
-                <p className="mt-4 text-muted">
-                  Send your idea to {siteConfig.studio.phoneDisplay}. Your chosen artist,
-                  answers, and any uploaded photo link are included. Tap Send in your texting app.
-                </p>
-                <a
-                  href={shopSmsHref(preparedMessage, typeof navigator === "undefined" ? "" : navigator.userAgent)}
-                  className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-accent px-6 text-sm font-medium text-background"
-                  onClick={() => trackEvent("quote_text_opened", { artist_id: selectedArtistId ?? "unsure" })}
-                >
-                  {submitCtaLabel}
-                </a>
-                <p className="mt-4 text-sm text-muted">
-                  If Messages doesn’t open or the message is missing, copy it below and text
-                  {" "}{siteConfig.studio.phoneDisplay} from your phone. Photos are shared as a link, not attachments.
-                </p>
-                <textarea aria-label="Prepared text message" readOnly value={preparedMessage}
-                  className="mt-3 min-h-48 w-full rounded-xl border border-border bg-surface p-4 text-sm" />
-                <Button type="button" variant="secondary" fullWidth className="mt-3" onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(preparedMessage);
-                    setCopyStatus("Copied. Paste into a text to the shop.");
-                  } catch {
-                    setCopyStatus("Select and copy the message above.");
-                  }
-                }}>Copy message</Button>
-                <p role="status" className="mt-2 text-sm text-muted">{copyStatus}</p>
-                <button type="button" className="mt-3 text-sm underline" onClick={() => setStep("contact")}>
-                  Edit my details
-                </button>
-                <div className="mt-8 flex flex-col gap-2">
-                  <Button type="button" variant="secondary" fullWidth onClick={closeQuote}>
-                    View more work
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    fullWidth
-                    onClick={() => {
-                      trackEvent("instagram_click");
-                      window.open(siteConfig.studio.instagram, "_blank");
-                    }}
-                  >
-                    Instagram
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    fullWidth
-                    onClick={() => {
-                      trackEvent("directions_click");
-                      window.open(siteConfig.studio.mapsUrl, "_blank");
-                    }}
-                  >
-                    Get Directions
-                  </Button>
-                </div>
-              </StepPanel>
-            )}
           </AnimatePresence>
         </div>
       </motion.div>
