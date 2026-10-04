@@ -115,39 +115,10 @@ const raw: SiteConfig = {
         "Many pieces can be quoted from your description and references. Larger or complex work may include a brief consult by text or in person.",
     },
     {
-      id: "references",
-      question: "Can I send reference photos?",
-      answer:
-        "Yes — upload inspiration in the quote flow. Screenshots and Pinterest saves are totally fine.",
-    },
-    {
       id: "deposit",
       question: "Do you require a deposit?",
       answer:
         "[CONFIGURE: Deposit policy]. We'll explain next steps when we text you.",
-    },
-    {
-      id: "artist",
-      question: "Can I choose my artist?",
-      answer:
-        "Absolutely. Pick Lucia, Juan, or Marcos in the quote flow — or choose \"Not sure\" and we'll route you to the right fit.",
-    },
-    {
-      id: "age",
-      question: "How old do I have to be?",
-      answer:
-        "[CONFIGURE: Age and ID policy per local law and shop rules.]",
-    },
-    {
-      id: "payment",
-      question: "What forms of payment do you accept?",
-      answer: "[CONFIGURE: Payment methods accepted at the studio.]",
-    },
-    {
-      id: "location",
-      question: "Where are you located?",
-      answer:
-        "We're at 11180 FM156 Unit 103, Justin, TX 76247. Tap Get Directions on this page for maps.",
     },
     {
       id: "prep",
